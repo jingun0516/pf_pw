@@ -5,6 +5,7 @@
 #include "MonsterStatusDataAsset.generated.h"
 
 class UAnimMontage;
+class ABaseAI;
 
 UCLASS(BlueprintType)
 class PF_PW_API UMonsterStatusDataAsset : public UDataAsset
@@ -12,6 +13,9 @@ class PF_PW_API UMonsterStatusDataAsset : public UDataAsset
 	GENERATED_BODY()
 
 public:
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Property)
+	TSubclassOf<ABaseAI> MonsterClass;
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Property)
 	FText Name;
 

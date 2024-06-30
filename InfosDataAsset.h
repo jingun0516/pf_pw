@@ -6,6 +6,7 @@
 
 class UDA_ToBuildDataAsset;
 class UToolsDataAsset;
+class UMonsterStatusDataAsset;
 /**
  * 
  */
@@ -20,4 +21,7 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Tool")
 	TArray<UToolsDataAsset*> ToolArray;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Monster")
+	TArray<UMonsterStatusDataAsset*> MonsterArray;
 };

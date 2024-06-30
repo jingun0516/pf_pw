@@ -5,6 +5,8 @@
 #include "Components/State/StateEnum.h"
 #include "Tools/MonsterBall/BaseMonsterball.h"
 #include "Components/ToolComponent.h"
+#include "Characters/Hero.h"
+#include "Camera/CameraComponent.h"
 
 UThrowAction::UThrowAction()
 {
@@ -51,8 +53,11 @@ void UThrowAction::BeginActionNotify()
 	
 	if (monsterball)
 	{
-		float Speed = 3000.f;
+		float Speed = 10000.f;
 		monsterball->DetachFromActor(FDetachmentTransformRules::KeepWorldTransform);
+		UCameraComponent* camera = OwnerHero->GetCamera();
+		//if(camera)
+		//	monsterball->GetProjectileComponent()->Velocity = camera->GetForwardVector() * Speed;
 		monsterball->GetProjectileComponent()->Velocity = OwnerCharacter->GetActorForwardVector() * Speed;
 		monsterball->GetProjectileComponent()->bRotationFollowsVelocity = true;
 		monsterball->GetProjectileComponent()->bShouldBounce = true;

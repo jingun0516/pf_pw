@@ -48,6 +48,10 @@ protected:
 	virtual void SetInfos(UMonsterStatusDataAsset* InStats);
 	void SetCatchPercent();
 
+	void UpdateWidgetScale();
+
+	virtual void Tick(float DeltaTime) override;
+
 protected:
 	FText Name;
 	UActionDataAsset* Actions;

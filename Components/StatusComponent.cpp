@@ -140,9 +140,5 @@ void UStatusComponent::OnSetHP()
 		monster->SetMonsterStatus();
 		UE_LOG(LogTemp, Error, TEXT("MonsterStatusWidget Complete"));
 	}
-	else
-	{
-		UE_LOG(LogTemp, Error, TEXT("MonsterStatusWidget asdfasdfasdf"));
-	}
 }
 

@@ -8,34 +8,63 @@
 #include "Logging/LogMacros.h"
 #include "Widgets/BaseStatus/MonsterStatusWidget.h"
 #include "Components/WidgetComponent.h"
+#include "Characters/Hero.h"
+#include "Camera/CameraComponent.h"
 
 
 DEFINE_LOG_CATEGORY(MonsterLog);
 
 ABaseMonster::ABaseMonster()
 {
-	GetMesh()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
-	//GetMesh()->SetCollisionObjectType(ECollisionChannel::ECC_Pawn);
-	//GetMesh()->SetCollisionResponseToAllChannels(ECollisionResponse::ECR_Overlap);
-	//GetMesh()->SetCollisionProfileName(UCollisionProfile::Pawn_ProfileName);
+	PrimaryActorTick.bCanEverTick = true;
+
+	if (GetMesh())
+	{
+		GetMesh()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+		// GetMesh()->SetCollisionObjectType(ECollisionChannel::ECC_Pawn);
+		// GetMesh()->SetCollisionResponseToAllChannels(ECollisionResponse::ECR_Overlap);
+		// GetMesh()->SetCollisionProfileName(UCollisionProfile::Pawn_ProfileName);
+	}
+	else
+	{
+		UE_LOG(LogTemp, Error, TEXT("GetMesh() returned nullptr!"));
+	}
 
 	MonsterStatusWidgetComp = CreateDefaultSubobject<UWidgetComponent>(TEXT("Monster Widget"));
 
-	MonsterStatusClass = Helper::GetClass<UUserWidget>(L"/Game/Widgets/BaseStatusWidget/WB_MonsterStatusWidget");
+	if (MonsterStatusWidgetComp)
+	{
+		MonsterStatusClass = Helper::GetClass<UUserWidget>(L"/Game/Widgets/BaseStatusWidget/WB_MonsterStatusWidget");
 
-	// 원하는 UI 위젯을 설정합니다.
-	MonsterStatusWidgetComp->SetWidgetClass(MonsterStatusClass);
+		if (MonsterStatusClass)
+		{
+			// 원하는 UI 위젯을 설정합니다.
+			MonsterStatusWidgetComp->SetWidgetClass(MonsterStatusClass);
+			UE_LOG(LogTemp, Error, TEXT("Succeed to load MonsterStatusClass!"));
+		}
+		else
+		{
+			UE_LOG(LogTemp, Error, TEXT("Failed to load MonsterStatusClass!"));
+		}
 
-	// 3D 공간에서 UI 위치를 설정합니다.
-	MonsterStatusWidgetComp->SetRelativeLocation(FVector(0, 0, GetActorScale3D().Z + 50.f));
-	MonsterStatusWidgetComp->SetRelativeRotation(FRotator(0, 0, -90));
-	MonsterStatusWidgetComp->SetRelativeScale3D(FVector(1, 1, 1));
+		// 3D 공간에서 UI 위치를 설정합니다.
+		MonsterStatusWidgetComp->AttachToComponent(GetMesh(), FAttachmentTransformRules::KeepRelativeTransform);
+		MonsterStatusWidgetComp->SetRelativeLocation(FVector(0, 0, GetActorScale3D().Z + 300.f));
+		//MonsterStatusWidgetComp->SetWorldRotation(FRotator(0, 0, 0));
+		MonsterStatusWidgetComp->SetRelativeRotation(FRotator(0, 0, -90));
+		MonsterStatusWidgetComp->SetRelativeScale3D(FVector(1, 1, 1));
+		MonsterStatusWidgetComp->SetVisibility(true);
 
-	// 이 컴포넌트를 부착할 액터를 찾거나 설정합니다.
-	MonsterStatusWidgetComp->AttachToComponent(GetMesh(), FAttachmentTransformRules::KeepRelativeTransform);
-	MonsterStatusWidgetComp->SetDrawSize(FVector2D(500, 150));
-	MonsterStatusWidgetComp->SetWidgetSpace(EWidgetSpace::World);
-	MonsterStatusWidgetComp->bAutoActivate = true;
+		// 이 컴포넌트를 부착할 액터를 찾거나 설정합니다.
+		MonsterStatusWidgetComp->SetDrawSize(FVector2D(300, 100));
+		MonsterStatusWidgetComp->SetWidgetSpace(EWidgetSpace::Screen);
+		MonsterStatusWidgetComp->bAutoActivate = true;
+	}
+	else
+	{
+		UE_LOG(LogTemp, Error, TEXT("Failed to create MonsterStatusWidgetComp!"));
+	}
+
 }
 
 void ABaseMonster::SetMonsterStatus()
@@ -44,6 +73,7 @@ void ABaseMonster::SetMonsterStatus()
 	{
 		MonsterStatusWidget->SetMonsterName(GetMonName());
 		MonsterStatusWidget->SetHP(this);
+		MonsterStatusWidget->SetVisibility(ESlateVisibility::HitTestInvisible);
 	}
 }
 
@@ -124,4 +154,34 @@ void ABaseMonster::SetCatchPercent()
 		CatchPercent = 0.1f;
 		break;
 	}
+}
+
+void ABaseMonster::UpdateWidgetScale()
+{
+	if (MonsterStatusWidgetComp)
+	{
+		// 플레이어의 카메라 위치를 가져옵니다.
+		APlayerController* PlayerController = GetWorld()->GetFirstPlayerController();
+		if (PlayerController && PlayerController->PlayerCameraManager)
+		{
+			FVector CameraLocation = PlayerController->PlayerCameraManager->GetCameraLocation();
+			FVector WidgetLocation = MonsterStatusWidgetComp->GetComponentLocation();
+
+			// 카메라와 위젯 사이의 거리를 계산합니다.
+			float Distance = FVector::Dist(CameraLocation, WidgetLocation);
+
+			// 거리 기반의 스케일 팩터를 정의합니다 (필요에 따라 조정).
+			float ScaleFactor = FMath::Clamp(1000.0f / Distance, 0.5f, 1.0f); // 0.5에서 1.0 사이로 스케일링
+
+			// 위젯에 스케일을 적용합니다.
+			MonsterStatusWidgetComp->SetWorldScale3D(FVector(ScaleFactor));
+		}
+	}
+}
+
+void ABaseMonster::Tick(float DeltaTime)
+{
+	Super::Tick(DeltaTime);
+
+	UpdateWidgetScale();
 }

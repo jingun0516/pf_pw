@@ -6,6 +6,7 @@
 
 DECLARE_LOG_CATEGORY_EXTERN(CatchLog, Log, All);
 
+class AHero;
 class UWidgetComponent;
 class UParticleSystem;
 
