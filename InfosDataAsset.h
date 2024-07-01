@@ -16,6 +16,11 @@ class PF_PW_API UInfosDataAsset : public UDataAsset
 	GENERATED_BODY()
 
 public:
+	TArray<UDA_ToBuildDataAsset*> GetBuildingArray() { return BuildingArray; }
+	TArray<UToolsDataAsset*> GetToolArray() { return ToolArray; }
+	TArray<UMonsterStatusDataAsset*> GetMonsterArray() { return MonsterArray; }
+
+public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Building")
 	TArray<UDA_ToBuildDataAsset*> BuildingArray;
 

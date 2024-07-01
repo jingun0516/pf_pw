@@ -135,9 +135,7 @@ void ABaseMonsterball::OnOverlap(UPrimitiveComponent* OverlappedComponent, AActo
 
 	// 오버랩 컴포넌트가 있는지 확인하고 오버랩된 지점 가져옴
 	for (UPrimitiveComponent* Component : OverlappingComponents)
-	{
 		Component->GetClosestPointOnCollision(GetActorLocation(), OverlapPoint);
-	}
 
 	UE_LOG(BallLog, Log, TEXT("MonsterBall Overlapped With: %s"), *OtherActor->GetName());
 	UParticleSystemComponent* SpawnedEmitter = UGameplayStatics::SpawnEmitterAtLocation

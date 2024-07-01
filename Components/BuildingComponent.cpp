@@ -71,16 +71,15 @@ void UBuildingComponent::BulidingInteraction(ABaseBuilding* building)
 
 bool UBuildingComponent::CanSpawnBuilding()
 {
-	if (tempBuilding && OwnerHero)
+	if (!tempBuilding || !OwnerHero) return true;
+
+	TArray<AActor*> OverlappingActors;
+	tempBuilding->GetOverlappingActors(OverlappingActors);
+	for (auto actors : OverlappingActors)
 	{
-		TArray<AActor*> OverlappingActors;
-		tempBuilding->GetOverlappingActors(OverlappingActors);
-		for (auto actors : OverlappingActors)
+		if (actors != tempBuilding || actors != OwnerHero)
 		{
-			if (actors != tempBuilding || actors != OwnerHero)
-			{
-				return false;
-			}
+			return false;
 		}
 	}
 
