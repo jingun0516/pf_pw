@@ -24,6 +24,16 @@ public:
 	UPROPERTY(meta = (BindWidget))
 	UTextBlock* MonsterName;
 	UPROPERTY(meta = (BindWidget))
+	UTextBlock* MonsterName_1;
+	UPROPERTY(meta = (BindWidget))
+	UTextBlock* MonsterName_2;
+	UPROPERTY(meta = (BindWidget))
+	UTextBlock* TeamMonster;
+	UPROPERTY(meta = (BindWidget))
+	UTextBlock* TeamMonster_1;
+	UPROPERTY(meta = (BindWidget))
+	UTextBlock* TeamMonster_2;
+	UPROPERTY(meta = (BindWidget))
 	UTextBlock* CurHP;
 	UPROPERTY(meta = (BindWidget))
 	UTextBlock* MaxHP;

@@ -72,7 +72,7 @@ void ABaseMonsterball::OnOverlap(UPrimitiveComponent* OverlappedComponent, AActo
 		spawnparameters.Owner = OwnerHero;
 		ABaseMonster* spawnedMonster = OwnerHero->GetPocketmonComponent()->CheckIsSpawned();
 
-		if (spawnedMonster && spawnedMonster != SpawnMonster)		// 스폰된 몬스터가 있으면
+		if (spawnedMonster)		// 스폰된 몬스터가 있으면
 		{
 			// 스폰 해제
 			spawnedMonster->SetActorHiddenInGame(true);
@@ -86,12 +86,13 @@ void ABaseMonsterball::OnOverlap(UPrimitiveComponent* OverlappedComponent, AActo
 			ABaseAIController* controller = Cast<ABaseAIController>(aiMonster->GetController());
 			if (!controller) return;
 			controller->get_blackboard()->SetValueAsObject(L"TargetActor", nullptr);
+			//controller->UnPossess();
 
 			UParticleSystemComponent* SpawnedEmitter = UGameplayStatics::SpawnEmitterAtLocation
 			(
 				this,
 				effect,
-				GetActorLocation() + spawnedMonster->GetActorScale3D().Z
+				spawnedMonster->GetActorLocation() + spawnedMonster->GetActorScale3D().Z
 			);
 		}
 
@@ -124,6 +125,7 @@ void ABaseMonsterball::OnOverlap(UPrimitiveComponent* OverlappedComponent, AActo
 		return;
 	}
 
+	// Catch 동작
 	FVector OverlapPoint;
 	ABaseMonster* monster = Cast<ABaseMonster>(OtherActor);
 

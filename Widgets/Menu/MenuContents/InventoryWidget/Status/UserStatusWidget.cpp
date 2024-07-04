@@ -112,6 +112,7 @@ void UUserStatusWidget::OnHPButtonClicked()
 {
 	UUserStatusComponent* UserStatusComponent = OwnerHero->GetUserStatusComponent();
 
+	if (!UserStatusComponent) return;
 	UserStatusComponent->AddHPPoint(100);
 	int hpPoint = UserStatusComponent->GetHPPoint();
 	SetHPPointText(hpPoint);

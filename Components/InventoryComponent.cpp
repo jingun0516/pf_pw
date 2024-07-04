@@ -29,6 +29,7 @@ void UInventoryComponent::TickComponent(float DeltaTime, ELevelTick TickType, FA
 
 void UInventoryComponent::AddItems(ABaseItem* item)
 {
+	UE_LOG(LogTemp, Log, TEXT("additem!!"));
 	if (item->GetCountable() == ECountableType::E_Countable)
 	{
 		bool bFound = false;
@@ -42,16 +43,13 @@ void UInventoryComponent::AddItems(ABaseItem* item)
 				findItem->SetCounts(count);
 				item->SetActorHiddenInGame(true);
 				item->SetActorEnableCollision(false);
+				if (!(OwnerHero->GetMenuWidget())) return;
+				TMap<int, UInventorySlotWidget*> slots = OwnerHero->GetMenuWidget()->GetInventoryWidget()->GetMainInventoryWidget()->GetInventorySlotsWidget()->GetInventorySlot();
+				if (!slots[i]) return;
 
-				if (OwnerHero->GetMenuWidget())
-				{
-					TMap<int, UInventorySlotWidget*> slots = OwnerHero->GetMenuWidget()->GetInventoryWidget()->GetMainInventoryWidget()->GetInventorySlotsWidget()->GetInventorySlot();
-					if (slots[i])
-					{
-						slots[i]->SetInvenText(findItem->GetCounts());
-						slots[i]->InvenText->SetVisibility(ESlateVisibility::Visible);
-					}
-				}
+				slots[i]->SetInvenText(findItem->GetCounts());
+				slots[i]->InvenText->SetVisibility(ESlateVisibility::Visible);
+
 				bFound = true;
 				UE_LOG(LogTemp, Log, TEXT("Countable Yes Find"));
 				break;

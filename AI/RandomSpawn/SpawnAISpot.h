@@ -2,6 +2,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
+#include "BaseRandomSpawnSpot.h"
 #include "SpawnAISpot.generated.h"
 
 class UInfosDataAsset;
@@ -11,7 +12,7 @@ class ABaseCharacter;
 class UBoxComponent;
 
 UCLASS()
-class PF_PW_API ASpawnAISpot : public AActor
+class PF_PW_API ASpawnAISpot : public ABaseRandomSpawnSpot
 {
 	GENERATED_BODY()
 	
@@ -25,17 +26,8 @@ public:
 	virtual void Tick(float DeltaTime) override;
 	void SpawnRandomMonster();
 	bool CanSpawnMonster();
-	FVector makeRandomSpot();
 
-protected:
-	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
-	UBoxComponent* SpotCollision;
 
 private:
-	UInfosDataAsset* Infos;
 	TArray<TSubclassOf<ABaseAI>> MonsterArray;
-	ABaseCharacter* PlayerC;
-
-
-	int CurTime = 0;
 };

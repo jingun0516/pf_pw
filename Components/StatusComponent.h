@@ -92,8 +92,8 @@ public:
 	void SetStatusPoint(int point) { StatusPoint = point; }
 
 private:
-	float HP = 50.f;
-	float MaxHP = 50.f;
+	float HP = 100.f;
+	float MaxHP = 100.f;
 	float Damage = 1.f;
 	float DamageToTree = 1.f;
 	float DamageToRock = 1.f;

@@ -308,26 +308,32 @@ void AHero::DoInterAction()
 	TArray<AActor*> OverlappingActors;
 	// 현재 액터와 겹치는 모든 액터를 가져옴
 	this->GetOverlappingActors(OverlappingActors);
-	if (OverlappingActors.Num() > 0)
+
+	if (OverlappingActors.Num() <= 0) return;
+
+	for (auto actor : OverlappingActors)
 	{
-		if (ABaseItem* item = Cast<ABaseItem>(OverlappingActors[0]))
+		if (ABaseItem* item = Cast<ABaseItem>(actor))
 		{
 			if (ABaseTool* tool = Cast<ABaseTool>(item))
 			{
 				GetToolComponent()->ToolInteraction(tool);
+				break;
 			}
 			else
 			{
 				GetInventoryComponent()->AddItems(item);
+				break;
 			}
 		}
-		else if (ABaseBuilding* building = Cast<ABaseBuilding>(OverlappingActors[0]))
+		else if (ABaseBuilding* building = Cast<ABaseBuilding>(actor))
 		{
 			GetBuildingComponent()->BulidingInteraction(building);
+			break;
 		}
 	}
 
-	//MULTICAST_DELEGATE_BROADCAST(DDoInterAction);
+	UE_LOG(LogTemp, Log, TEXT("Overlapping Actor : %s "), *OverlappingActors[0]->GetName());
 }
 void AHero::DoSpawnAction()
 {

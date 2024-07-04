@@ -9,6 +9,7 @@ DECLARE_LOG_CATEGORY_EXTERN(ResourceLog, Log, All);
 class UParticleSystem;
 class USoundCue;
 class ABaseItem;
+class UCapsuleComponent;
 
 UCLASS()
 class PF_PW_API ABaseResource : public AActor
@@ -46,8 +47,8 @@ public:
 		AActor* DamageCauser
 	) override;
 
-	UParticleSystem* gather;
-	USoundCue* sound;
+	UParticleSystem* GetGather() { return gather; }
+	USoundCue* GetSound() { return sound; }
 
 	void Respawn();
 	virtual void Die();
@@ -56,8 +57,13 @@ protected:
 	UPROPERTY(Visibleanywhere)
 	UStaticMeshComponent* mesh = nullptr;
 
+	UPROPERTY(EditAnywhere)
+	UCapsuleComponent* col = nullptr;
+
 	TSubclassOf<ABaseItem> SpawnItemClass;
 
+	UParticleSystem* gather;
+	USoundCue* sound;
 private:
 	float HP = 50.f;
 	float MaxHP = 50.f;

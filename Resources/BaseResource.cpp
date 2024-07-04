@@ -9,7 +9,7 @@
 #include <Sound/SoundCue.h>
 #include "Items/BaseItem.h"
 #include "Math/UnrealMathUtility.h"
-
+#include "Components/CapsuleComponent.h"
 
 DEFINE_LOG_CATEGORY(ResourceLog);
 
@@ -18,7 +18,14 @@ ABaseResource::ABaseResource()
 	PrimaryActorTick.bCanEverTick = true;
 
 	mesh = Helper::CreateSceneComponent<UStaticMeshComponent>(this, "ResourceMesh");
-	
+	col = Helper::CreateSceneComponent<UCapsuleComponent>(this, "collision", mesh);
+
+	RootComponent = mesh;
+
+	col->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
+	col->SetCollisionResponseToAllChannels(ECR_Ignore);
+	col->SetCollisionResponseToChannel(ECC_Pawn, ECR_Overlap); // AI 감지와 관련된 채널 설정
+
 	mesh->OnComponentBeginOverlap.AddDynamic(this, &ABaseResource::OnBeginOverlap);
 }
 
@@ -67,10 +74,5 @@ void ABaseResource::Respawn()
 
 void ABaseResource::Die()
 {
-	SetActorHiddenInGame(true);
-	SetActorEnableCollision(false);
-
-	FTimerHandle SpawnTimerHandle;
-	float RespawnDelay = 5.0f;
-	GetWorldTimerManager().SetTimer(SpawnTimerHandle, this, &ABaseResource::Respawn, RespawnDelay, false);
+	Destroy();
 }

@@ -54,22 +54,22 @@ void AMyTeamAIController::OnUpdated(TArray<AActor*> const& updated_actors)
 void AMyTeamAIController::OnPerceptionUpdated(const TArray<AActor*>& UpdatedActors)
 {
 	bFound = false;
+
 	for (auto actor : UpdatedActors)
 	{
 		UE_LOG(LogTemp, Log, TEXT("TeamAI Perception Updated : %s"), *actor->GetName());
 		if (ABaseMonster* monster = Cast<ABaseMonster>(actor))
 		{
-			if (monster->GetIsWild())
-			{
-				get_blackboard()->SetValueAsObject(TEXT("TargetActor"), monster);
-				UE_LOG(LogTemp, Log, TEXT("Set TargetActor Succeed"));
-				bFound = true;
-				break;
-			}
-		}
-		else if (ABaseResource* resource = Cast<ABaseResource>(actor))
-		{
+			if (!(monster->GetIsWild())) continue;
+
 			get_blackboard()->SetValueAsObject(TEXT("TargetActor"), monster);
+			UE_LOG(LogTemp, Log, TEXT("Set Monster TargetActor Succeed"));
+			bFound = true;
+			break;
+		}
+		if (ABaseResource* resource = Cast<ABaseResource>(actor))
+		{
+			get_blackboard()->SetValueAsObject(TEXT("TargetActor"), resource);
 			UE_LOG(LogTemp, Log, TEXT("Set Resource TargetActor Succeed"));
 			bFound = true;
 			break;

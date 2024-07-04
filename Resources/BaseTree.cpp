@@ -6,6 +6,7 @@
 #include "Particles/ParticleSystem.h"
 #include "Helper.h"
 #include "Items/Item_Wood.h"
+#include "Sound/SoundCue.h"
 
 ABaseTree::ABaseTree()
 {

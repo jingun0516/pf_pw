@@ -9,10 +9,8 @@ void UMonsterStatusWidget::SetMonsterName(FText InName)
 {
 	if(MonsterName)
 		MonsterName->SetText(InName);
-	else
-	{
-		UE_LOG(LogTemp, Error, TEXT("Why No Name"));
-	}
+	if (TeamMonster)
+		TeamMonster->SetText(InName);
 }
 
 void UMonsterStatusWidget::SetHP(ABaseCharacter* InMonster)
@@ -30,6 +28,11 @@ void UMonsterStatusWidget::SetHP(ABaseCharacter* InMonster)
 
 void UMonsterStatusWidget::SetTeamMonsterName()
 {
-	if (MonsterName)
-		MonsterName->SetShadowColorAndOpacity(FLinearColor::Blue);
+	MonsterName->SetVisibility(ESlateVisibility::Hidden);
+	MonsterName_1->SetVisibility(ESlateVisibility::Hidden);
+	MonsterName_2->SetVisibility(ESlateVisibility::Hidden);
+	
+	TeamMonster->SetVisibility(ESlateVisibility::Visible);
+	TeamMonster_1->SetVisibility(ESlateVisibility::Visible);
+	TeamMonster_2->SetVisibility(ESlateVisibility::Visible);
 }

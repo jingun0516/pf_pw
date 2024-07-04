@@ -48,8 +48,6 @@ void AEnemyAIController::Tick(float DeltaTime)
 
 void AEnemyAIController::OnPerceptionUpdated(const TArray<AActor*>& UpdatedActors)
 {
-	UE_LOG(LogTemp, Log, TEXT("Perception Updated"));
-
 	bFound = false;
 	for (auto actor : UpdatedActors)
 	{
@@ -57,9 +55,9 @@ void AEnemyAIController::OnPerceptionUpdated(const TArray<AActor*>& UpdatedActor
 		if (AHero* hero = Cast<AHero>(actor))
 		{
 			get_blackboard()->SetValueAsObject(TEXT("TargetActor"), hero);
-			AHero* asdf = Cast<AHero>(get_blackboard()->GetValueAsObject(TEXT("TargetActor")));
-			if(asdf)
-				UE_LOG(LogTemp, Log, TEXT("Set PlayerKey Succeed : %s"), *asdf->GetName());
+			AHero* herokey = Cast<AHero>(get_blackboard()->GetValueAsObject(TEXT("TargetActor")));
+			if(herokey)
+				UE_LOG(LogTemp, Log, TEXT("Enemy Set Player TargetActor Succeed : %s"), *herokey->GetName());
 			bFound = true;
 			break;
 		}

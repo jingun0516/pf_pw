@@ -30,6 +30,10 @@ public:
 	UImage* NextMonSlot;
 	UPROPERTY(meta = (BindWidget))
 	UTextBlock* CharacterLV;
+	UPROPERTY(meta = (BindWidget))
+	UTextBlock* HPText;
+	UPROPERTY(meta = (BindWidget))
+	UTextBlock* MaxHPText;
 
 	UPROPERTY(meta = (BindWidget))
 	UTextBlock* CurMonName;

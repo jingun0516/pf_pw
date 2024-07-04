@@ -6,6 +6,7 @@
 #include "Tools/BaseTool.h"
 #include "Particles/ParticleSystem.h"
 #include "Items/Item_Rock.h"
+#include "Sound/SoundCue.h"
 
 ABaseRock::ABaseRock()
 {

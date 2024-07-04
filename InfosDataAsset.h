@@ -7,6 +7,7 @@
 class UDA_ToBuildDataAsset;
 class UToolsDataAsset;
 class UMonsterStatusDataAsset;
+class ABaseResource;
 /**
  * 
  */
@@ -19,6 +20,7 @@ public:
 	TArray<UDA_ToBuildDataAsset*> GetBuildingArray() { return BuildingArray; }
 	TArray<UToolsDataAsset*> GetToolArray() { return ToolArray; }
 	TArray<UMonsterStatusDataAsset*> GetMonsterArray() { return MonsterArray; }
+	TArray<TSubclassOf<ABaseResource>> GetResourceArray() { return ResourceArray; }
 
 public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Building")
@@ -29,4 +31,7 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Monster")
 	TArray<UMonsterStatusDataAsset*> MonsterArray;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Resource")
+	TArray<TSubclassOf<ABaseResource>> ResourceArray;
 };

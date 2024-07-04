@@ -62,6 +62,8 @@ void UBaseStatusWidget::SetPocketmon()
 
 void UBaseStatusWidget::SetHPBar(float HP, float MaxHP)
 {
+	HPText->SetText(FText::AsNumber(HP));
+	MaxHPText->SetText(FText::AsNumber(MaxHP));
 	HPProgressBar->SetPercent(HP / MaxHP);
 }
 

@@ -18,7 +18,7 @@
 #include "Helper.h"
 #include <Kismet/GameplayStatics.h>
 #include "Particles/ParticleSystemComponent.h"
-
+#include "Sound/SoundCue.h" 
 
 DEFINE_LOG_CATEGORY(ToolLog);
 
@@ -225,10 +225,10 @@ void ABaseTool::NotifyActorBeginOverlap(AActor* OtherActor)
 				UParticleSystemComponent* SpawnedEmitter = UGameplayStatics::SpawnEmitterAtLocation
 				(
 					this,
-					resource->gather,
+					resource->GetGather(),
 					OverlapPoint
 				);
-				UGameplayStatics::PlaySoundAtLocation(GetWorld(), resource->sound, OverlapPoint);
+				UGameplayStatics::PlaySoundAtLocation(GetWorld(), resource->GetSound(), OverlapPoint);
 			}
 		}
 	}
