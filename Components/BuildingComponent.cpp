@@ -11,6 +11,7 @@
 #include "Widgets/Building/WorkTimeActor.h"
 #include "Building/BuildingStateEnum.h"
 #include "Widgets/Building/BuildingClickedWidget.h"
+#include "AI/RandomSpawn/BaseRandomSpawnSpot.h"
 
 UBuildingComponent::UBuildingComponent()
 {
@@ -50,7 +51,7 @@ void UBuildingComponent::TickComponent(float DeltaTime, ELevelTick TickType, FAc
 				if (MaxV < tempBuilding->GetScaledCol().Y)
 					MaxV = tempBuilding->GetScaledCol().Y;
 				
-				float locationZ = OwnerHero->GetActorLocation().Z;
+				float locationZ = OwnerHero->GetActorLocation().Z - 20;
 				FVector tempPos;
 				tempPos = OwnerHero->GetActorLocation() + OwnerHero->GetActorForwardVector() * (MaxV + 500.f) - locationZ;
 
@@ -77,7 +78,8 @@ bool UBuildingComponent::CanSpawnBuilding()
 	tempBuilding->GetOverlappingActors(OverlappingActors);
 	for (auto actors : OverlappingActors)
 	{
-		if (actors != tempBuilding || actors != OwnerHero)
+		UE_LOG(LogTemp, Log, TEXT("SpawnBuilding: %s"), *actors->GetName());
+		if (actors != tempBuilding || actors != OwnerHero || !(Cast<ABaseRandomSpawnSpot>(actors)))
 		{
 			return false;
 		}
@@ -131,7 +133,7 @@ void UBuildingComponent::SpawnBuildingStart()
 
 void UBuildingComponent::SpawnBuildingSuccess()
 {
-	FVector BuildLocation = tempBuilding->GetActorLocation();
+	FVector BuildLocation = tempBuilding->GetActorLocation() - FVector(0, 0, 20);
 	FRotator BuildRotator = tempBuilding->GetActorRotation();
 	tempBuilding->Destroy();
 	FActorSpawnParameters SpawnParams;

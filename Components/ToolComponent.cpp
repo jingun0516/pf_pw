@@ -224,10 +224,7 @@ void UToolComponent::DoSubAction()
 
 	if (OwnerCharacter->GetStateComponent()->GetState() == E_StateType::E_Build)
 	{
-		if (OwnerCharacter->GetBuildingComponent()->CanSpawnBuilding())		// Building이 가능한 상태일 경우
-		{
-			OwnerCharacter->GetBuildingComponent()->BuildingCancel();
-		}
+		OwnerCharacter->GetBuildingComponent()->BuildingCancel();
 	}
 
 	if (GetCurTool()->SubAction)

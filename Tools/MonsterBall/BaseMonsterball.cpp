@@ -7,6 +7,8 @@
 #include <Kismet/GameplayStatics.h>
 #include "Components/Pocketmon/PocketmonComponent.h"
 #include "Components/Pocketmon/PocketmonEnum.h"
+#include "Components/State/StateComponent.h"
+#include "Components/State/StateEnum.h"
 #include "Particles/ParticleSystem.h"
 #include "CatchActor.h"
 #include "AI/BaseAI.h"
@@ -98,6 +100,8 @@ void ABaseMonsterball::OnOverlap(UPrimitiveComponent* OverlappedComponent, AActo
 
 		if (spawnedMonster != SpawnMonster)	// 스폰된 몬스터와 스폰할 몬스터가 다르다면
 		{
+			if (SpawnMonster->GetStateComponent()->GetState() == E_StateType::E_Dead) return;
+
 			UParticleSystemComponent* SpawnedEmitter = UGameplayStatics::SpawnEmitterAtLocation
 			(
 				this,

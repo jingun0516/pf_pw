@@ -10,6 +10,8 @@
 #include "Components/WidgetComponent.h"
 #include "Characters/Hero.h"
 #include "Camera/CameraComponent.h"
+#include "Camera/PlayerCameraManager.h"
+#include "Kismet/GameplayStatics.h"
 
 
 DEFINE_LOG_CATEGORY(MonsterLog);
@@ -46,7 +48,16 @@ ABaseMonster::ABaseMonster()
 		{
 			UE_LOG(LogTemp, Error, TEXT("Failed to load MonsterStatusClass!"));
 		}
+		
+		MonsterStatusWidgetComp->SetupAttachment(GetMesh());
 
+		MonsterStatusWidgetComp->SetRelativeLocation(FVector(0, 0, GetActorScale3D().Z + 300.f)); // 위치 설정
+		MonsterStatusWidgetComp->SetRelativeRotation(FRotator(0, 90, 0)); // 회전 설정
+		MonsterStatusWidgetComp->SetRelativeScale3D(FVector(1, 1, 1)); // 스케일 설정
+		MonsterStatusWidgetComp->SetDrawSize(FVector2D(600, 200)); // 크기 설정
+		MonsterStatusWidgetComp->SetWidgetSpace(EWidgetSpace::Screen); // 공간 설정
+		MonsterStatusWidgetComp->bAutoActivate = true; // 자동 활성화
+		/*
 		// 3D 공간에서 UI 위치를 설정합니다.
 		MonsterStatusWidgetComp->AttachToComponent(GetMesh(), FAttachmentTransformRules::KeepRelativeTransform);
 		MonsterStatusWidgetComp->SetRelativeLocation(FVector(0, 0, GetActorScale3D().Z + 300.f));
@@ -57,8 +68,10 @@ ABaseMonster::ABaseMonster()
 
 		// 이 컴포넌트를 부착할 액터를 찾거나 설정합니다.
 		MonsterStatusWidgetComp->SetDrawSize(FVector2D(300, 100));
-		MonsterStatusWidgetComp->SetWidgetSpace(EWidgetSpace::Screen);
+		MonsterStatusWidgetComp->SetWidgetSpace(EWidgetSpace::World);
 		MonsterStatusWidgetComp->bAutoActivate = true;
+		*/
+		
 	}
 	else
 	{
@@ -183,5 +196,10 @@ void ABaseMonster::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	UpdateWidgetScale();
+	if (PlayerC && GetDistanceTo(PlayerC) <= 1000)
+		MonsterStatusWidgetComp->SetVisibility(true);
+
+	if (PlayerC && GetDistanceTo(PlayerC) > 1000)
+		MonsterStatusWidgetComp->SetVisibility(false);
+	//UpdateWidgetScale();
 }

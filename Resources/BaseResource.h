@@ -10,6 +10,7 @@ class UParticleSystem;
 class USoundCue;
 class ABaseItem;
 class UCapsuleComponent;
+class UAIPerceptionStimuliSourceComponent;
 
 UCLASS()
 class PF_PW_API ABaseResource : public AActor
@@ -60,6 +61,9 @@ protected:
 	UPROPERTY(EditAnywhere)
 	UCapsuleComponent* col = nullptr;
 
+	UPROPERTY(EditAnywhere)
+	UAIPerceptionStimuliSourceComponent* StimuliSourceComponent;
+
 	TSubclassOf<ABaseItem> SpawnItemClass;
 
 	UParticleSystem* gather;
@@ -67,5 +71,4 @@ protected:
 private:
 	float HP = 50.f;
 	float MaxHP = 50.f;
-
 };

@@ -28,10 +28,12 @@ void ASpawnAISpot::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	if (CurTime % 200 == 0)
+	//if(CurTime % 200 == 0)
+		//SpawnRandomMonster();
+	if (CurTime >= 5000 && CurTime % 500 == 0)
 		SpawnRandomMonster();
-
-	if (CurTime >= 500) Destroy();
+	
+	if (CurTime >= 7000) Destroy();
 	
 }
 
@@ -43,7 +45,7 @@ void ASpawnAISpot::SpawnRandomMonster()
 	FVector loc = makeRandomSpot();
 
 	if (CanSpawnMonster())
-		GetWorld()->SpawnActor<ABaseAI>(MonsterArray[RandomInt], loc, FRotator());
+		GetWorld()->SpawnActor<ABaseAI>(MonsterArray[RandomInt], loc, FRotator(0.f, 0.f, 0.f));
 }
 
 bool ASpawnAISpot::CanSpawnMonster()

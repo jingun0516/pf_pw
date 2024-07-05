@@ -2,6 +2,7 @@
 
 
 #include "Widgets/Building/ToBuild/ToBuildSlotWidget.h"
+#include "Widgets/Building/ToBuild/ToBuildWidget.h"
 #include "Widgets/Building/BuildingClickedWidget.h"
 #include "Building/DA_ToBuildDataAsset.h"
 #include "Characters/Hero.h"
@@ -51,6 +52,7 @@ void UToBuildSlotWidget::ToBuildSlotClicked()
 		if (!building) return;
 		BuildingClickedWidget = building->GetBuildingClickedWidget();
 		if (!BuildingClickedWidget) return;
+		building->Destroy();
 
 		BuildingClickedWidget->SetVisibility(ESlateVisibility::Visible);
 		BuildingClickedWidget->InterActionWidget = this;

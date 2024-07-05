@@ -37,13 +37,15 @@ void UBTS_SetBehavior::TickNode(UBehaviorTreeComponent& OwnerComp, uint8* NodeMe
 	}
 	else if (enemy)
 	{
-		ActionDistance = 300.f;
+		ActionDistance = 250.f;
 		if (enemy->GetDistanceTo(AICharacter) <= ActionDistance)
 		{
 			if (AICharacter->GetCanAttack())
 			{
-				FRotator rotation = UKismetMathLibrary::FindLookAtRotation(AICharacter->GetActorLocation(), enemy->GetActorLocation());
+				FVector enemyLoc = enemy->GetActorLocation();
+				FRotator rotation = UKismetMathLibrary::FindLookAtRotation(AICharacter->GetActorLocation(), FVector(enemyLoc.X, enemyLoc.Y, AICharacter->GetActorLocation().Z));
 				// 로테이션을 구해주는 함수
+
 				AICharacter->SetActorRotation(rotation);
 				SetBehavior(EBehaviorKeys::E_Action);
 			}
@@ -60,10 +62,22 @@ void UBTS_SetBehavior::TickNode(UBehaviorTreeComponent& OwnerComp, uint8* NodeMe
 	}
 	else if (resource && !(AICharacter->GetIsWild()))
 	{
-		ActionDistance = 300.f;
-		if (enemy->GetDistanceTo(AICharacter) <= ActionDistance)
+		ActionDistance = 250.f;
+		if (resource->GetDistanceTo(AICharacter) <= ActionDistance)
 		{
-			SetBehavior(EBehaviorKeys::E_Action);
+			if (AICharacter->GetCanAttack())
+			{
+				FVector resLoc = resource->GetActorLocation();
+				FRotator rotation = UKismetMathLibrary::FindLookAtRotation(AICharacter->GetActorLocation(), FVector(resLoc.X, resLoc.Y, AICharacter->GetActorLocation().Z));
+				// 로테이션을 구해주는 함수
+				
+				AICharacter->SetActorRotation(rotation);
+				SetBehavior(EBehaviorKeys::E_Action);
+			}
+			else
+			{
+				SetBehavior(EBehaviorKeys::E_Wait);
+			}
 		}
 		else
 		{

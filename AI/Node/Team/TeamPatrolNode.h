@@ -14,4 +14,7 @@ class PF_PW_API UTeamPatrolNode : public UBTTaskNode
 public:
 	UTeamPatrolNode();
 	EBTNodeResult::Type ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory);
+
+private:
+	int cnt = 0;
 };

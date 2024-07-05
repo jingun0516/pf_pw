@@ -1,6 +1,3 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
-
 #include "AI/MyTeam/MyTeamAIController.h"
 #include "Characters/Hero.h"
 #include "Characters/Monsters/BaseMonster.h"
@@ -67,8 +64,10 @@ void AMyTeamAIController::OnPerceptionUpdated(const TArray<AActor*>& UpdatedActo
 			bFound = true;
 			break;
 		}
-		if (ABaseResource* resource = Cast<ABaseResource>(actor))
+		else if (ABaseResource* resource = Cast<ABaseResource>(actor))
 		{
+			if (get_blackboard()->GetValueAsObject(TEXT("TargetActor")) != nullptr) continue;
+
 			get_blackboard()->SetValueAsObject(TEXT("TargetActor"), resource);
 			UE_LOG(LogTemp, Log, TEXT("Set Resource TargetActor Succeed"));
 			bFound = true;

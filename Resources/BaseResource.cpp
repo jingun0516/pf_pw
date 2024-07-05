@@ -10,6 +10,8 @@
 #include "Items/BaseItem.h"
 #include "Math/UnrealMathUtility.h"
 #include "Components/CapsuleComponent.h"
+#include "Perception/AIPerceptionStimuliSourceComponent.h"
+#include <Perception/AISense_Sight.h>
 
 DEFINE_LOG_CATEGORY(ResourceLog);
 
@@ -27,11 +29,29 @@ ABaseResource::ABaseResource()
 	col->SetCollisionResponseToChannel(ECC_Pawn, ECR_Overlap); // AI 감지와 관련된 채널 설정
 
 	mesh->OnComponentBeginOverlap.AddDynamic(this, &ABaseResource::OnBeginOverlap);
+	//StimuliSourceComponent = Helper::CreateSceneComponent<UAIPerceptionStimuliSourceComponent>(this, "StimulComp");
+	StimuliSourceComponent = CreateDefaultSubobject<UAIPerceptionStimuliSourceComponent>(TEXT("StimuliSourceComponent"));
+
+	// 감지 유형 설정 (시각 감지)
+	StimuliSourceComponent->RegisterForSense(TSubclassOf<UAISense_Sight>());
+	StimuliSourceComponent->bAutoRegister = true;
 }
 
 void ABaseResource::BeginPlay()
 {
 	Super::BeginPlay();
+
+	StimuliSourceComponent->RegisterForSense(TSubclassOf<UAISense_Sight>());
+	StimuliSourceComponent->bAutoRegister = true;
+
+	if (StimuliSourceComponent)
+	{
+		UE_LOG(LogTemp, Log, TEXT("StimuliSourceComponent successfully initialized"));
+	}
+	else
+	{
+		UE_LOG(LogTemp, Error, TEXT("StimuliSourceComponent failed to initialize"));
+	}
 }
 
 void ABaseResource::OnBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)

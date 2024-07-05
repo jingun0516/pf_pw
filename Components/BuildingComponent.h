@@ -8,6 +8,7 @@ class ABaseCharacter;
 class AHero;
 class ABaseBuilding;
 class AWorkTimeActor;
+class ABaseRandomSpawnSpot;
 
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class PF_PW_API UBuildingComponent : public UActorComponent

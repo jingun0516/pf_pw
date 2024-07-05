@@ -47,6 +47,7 @@ DECLARE_LOG_CATEGORY_EXTERN(HeroLog, Log, All);
 
 class UInputDataAsset;
 class UUserStatusComponent;
+class UToBuildWidget;
 
 UCLASS()
 class PF_PW_API AHero : public ABaseCharacter

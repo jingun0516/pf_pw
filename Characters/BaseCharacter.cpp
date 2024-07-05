@@ -32,6 +32,7 @@
 #include "Engine/CollisionProfile.h"
 
 #include "AI/BaseAI.h"
+#include "Characters/Hero.h"
 
 DEFINE_LOG_CATEGORY(CharacterLog);
 
@@ -160,16 +161,20 @@ void ABaseCharacter::OnApplyDamage(AActor* DamagedActor, AActor* DamagedCauser, 
 	
 	if (ABaseResource* DResource = Cast<ABaseResource>(DamagedActor))
 	{
-		if (ABaseTree* tree = Cast<ABaseTree>(DResource))
+		if(Cast<ABaseAI>(this))
+			UGameplayStatics::ApplyDamage(DResource, dmg, GetController(), DamagedCauser, NULL);
+		else
 		{
-			UGameplayStatics::ApplyDamage(DResource, dmgToTree, GetController(), DamagedCauser, NULL);
-		}
-		if (ABaseRock* rock = Cast<ABaseRock>(DResource))
-		{
-			UGameplayStatics::ApplyDamage(DResource, dmgToRock, GetController(), DamagedCauser, NULL);
+			if (ABaseTree* tree = Cast<ABaseTree>(DResource))
+			{
+				UGameplayStatics::ApplyDamage(DResource, dmgToTree, GetController(), DamagedCauser, NULL);
+			}
+			if (ABaseRock* rock = Cast<ABaseRock>(DResource))
+			{
+				UGameplayStatics::ApplyDamage(DResource, dmgToRock, GetController(), DamagedCauser, NULL);
+			}
 		}
 	}
-	
 }
 
 void ABaseCharacter::SetInfos(ABaseTool* tool)

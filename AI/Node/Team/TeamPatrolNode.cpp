@@ -30,12 +30,14 @@ EBTNodeResult::Type UTeamPatrolNode::ExecuteTask(UBehaviorTreeComponent& OwnerCo
 	FVector AILocation = AICharacter->GetActorLocation();
 	float dist = FVector::Distance(AILocation, ToLocation);
 
-	if (dist <= 200.f)		// ToLocation과의 거리가 일정 수치 이하일 때 ToLocation 재설정
+	if (dist <= 200.f || cnt >= 500)		// ToLocation과의 거리가 일정 수치 이하일 때 ToLocation 재설정
 	{
 		Controller->SetTargetLoc(TargetLocation);
+		cnt = 0;
 	}
+	UE_LOG(LogTemp, Log, TEXT("cnt: %d"), cnt);
 	Controller->MoveToLocation(ToLocation, 50.f);
-
+	cnt++;
 
 	FinishLatentTask(OwnerComp, EBTNodeResult::Succeeded);
 	

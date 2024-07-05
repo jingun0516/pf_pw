@@ -64,7 +64,9 @@ protected:
 	float MaxSpeed = 200.f;
 	float WalkSpeed = 100.f;
 
+	UPROPERTY(EditAnywhere)
 	UWidgetComponent* MonsterStatusWidgetComp;
+
 	UMonsterStatusWidget* MonsterStatusWidget;
 	TSubclassOf<UUserWidget> MonsterStatusClass;
 };

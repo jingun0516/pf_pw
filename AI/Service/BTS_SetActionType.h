@@ -7,6 +7,8 @@
 #include "BTS_SetActionType.generated.h"
 
 enum class EActionTypeKeys : uint8;
+class ABaseResource;
+class ABaseCharacter;
 /**
  * 
  */
@@ -27,6 +29,4 @@ protected:
 	UBlackboardComponent* BlackBoardComp;
 
 	void SetActionType(EActionTypeKeys Action);
-
-	float ActionDistance = 300.f;
 };

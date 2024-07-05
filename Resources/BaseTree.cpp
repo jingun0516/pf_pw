@@ -1,6 +1,3 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
-
 #include "Resources/BaseTree.h"
 #include "Tools/BaseTool.h"
 #include "Particles/ParticleSystem.h"

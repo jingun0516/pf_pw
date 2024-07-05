@@ -1,6 +1,3 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
-
 #include "Resources/BaseRock.h"
 #include "Helper.h"
 #include "Tools/BaseTool.h"

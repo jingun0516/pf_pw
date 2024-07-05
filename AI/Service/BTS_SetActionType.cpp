@@ -9,6 +9,7 @@
 #include "AI/Enum/EBehaviorKeys.h"
 #include "Components/State/StateEnum.h"
 #include "Components/State/StateComponent.h"
+#include "Resources/BaseResource.h"
 
 UBTS_SetActionType::UBTS_SetActionType()
 {
@@ -24,7 +25,10 @@ void UBTS_SetActionType::TickNode(UBehaviorTreeComponent& OwnerComp, uint8* Node
 
 	BlackBoardComp = OwnerComp.GetBlackboardComponent();
 	ABaseCharacter* enemy = Cast<ABaseCharacter>(BlackBoardComp->GetValueAsObject(TEXT("TargetActor")));
-	
+	ABaseResource* resource = Cast<ABaseResource>(BlackBoardComp->GetValueAsObject(TEXT("TargetActor")));
+
+	float ActionDistance = 250.f;
+
 	if (enemy)
 	{
 		if (enemy->GetDistanceTo(AICharacter) <= ActionDistance)
@@ -37,6 +41,20 @@ void UBTS_SetActionType::TickNode(UBehaviorTreeComponent& OwnerComp, uint8* Node
 
 		}
 		UE_LOG(LogTemp, Log, TEXT("Distance :%f / ActionDistance :%f"), enemy->GetDistanceTo(AICharacter), ActionDistance);
+	}
+	else if (resource)
+	{
+		if (resource->GetDistanceTo(AICharacter) <= ActionDistance)
+		{
+			SetActionType(EActionTypeKeys::E_Main);
+		}
+		else
+		{
+			SetActionType(EActionTypeKeys::E_None);
+
+		}
+		UE_LOG(LogTemp, Log, TEXT("Distance :%f / ActionDistance :%f"), resource->GetDistanceTo(AICharacter), ActionDistance);
+
 	}
 	
 	if (BlackBoardComp->GetValueAsEnum(TEXT("ActionTypeKey")) == static_cast<uint8>(EActionTypeKeys::E_Main))

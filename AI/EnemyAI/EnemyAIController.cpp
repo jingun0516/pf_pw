@@ -1,6 +1,3 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
-
 #include "AI/EnemyAI/EnemyAIController.h"
 #include "Characters/Hero.h"
 #include "Characters/BaseCharacter.h"
@@ -12,6 +9,7 @@
 #include "Perception/AISenseConfig_Sight.h"
 #include "Perception/AIPerceptionComponent.h"
 #include "AI/BaseAI.h"
+#include "Resources/BaseResource.h"
 
 AEnemyAIController::AEnemyAIController()
 {
