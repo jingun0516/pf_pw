@@ -23,9 +23,6 @@ ABaseMonster::ABaseMonster()
 	if (GetMesh())
 	{
 		GetMesh()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
-		// GetMesh()->SetCollisionObjectType(ECollisionChannel::ECC_Pawn);
-		// GetMesh()->SetCollisionResponseToAllChannels(ECollisionResponse::ECR_Overlap);
-		// GetMesh()->SetCollisionProfileName(UCollisionProfile::Pawn_ProfileName);
 	}
 	else
 	{
@@ -57,21 +54,6 @@ ABaseMonster::ABaseMonster()
 		MonsterStatusWidgetComp->SetDrawSize(FVector2D(600, 200)); // 크기 설정
 		MonsterStatusWidgetComp->SetWidgetSpace(EWidgetSpace::Screen); // 공간 설정
 		MonsterStatusWidgetComp->bAutoActivate = true; // 자동 활성화
-		/*
-		// 3D 공간에서 UI 위치를 설정합니다.
-		MonsterStatusWidgetComp->AttachToComponent(GetMesh(), FAttachmentTransformRules::KeepRelativeTransform);
-		MonsterStatusWidgetComp->SetRelativeLocation(FVector(0, 0, GetActorScale3D().Z + 300.f));
-		//MonsterStatusWidgetComp->SetWorldRotation(FRotator(0, 0, 0));
-		MonsterStatusWidgetComp->SetRelativeRotation(FRotator(0, 0, -90));
-		MonsterStatusWidgetComp->SetRelativeScale3D(FVector(1, 1, 1));
-		MonsterStatusWidgetComp->SetVisibility(true);
-
-		// 이 컴포넌트를 부착할 액터를 찾거나 설정합니다.
-		MonsterStatusWidgetComp->SetDrawSize(FVector2D(300, 100));
-		MonsterStatusWidgetComp->SetWidgetSpace(EWidgetSpace::World);
-		MonsterStatusWidgetComp->bAutoActivate = true;
-		*/
-		
 	}
 	else
 	{
@@ -98,6 +80,17 @@ void ABaseMonster::SetTeamMonster()
 	}
 }
 
+float ABaseMonster::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser)
+{
+	if (!GetIsWild())
+	{
+		if (Cast<AHero>(DamageCauser->GetOwner()))		// 야생의 몬스터가 아닐 경우 플레이어가 때리지 못함
+			return 0.f;
+	}
+
+	return Super::TakeDamage(DamageAmount, DamageEvent, EventInstigator, DamageCauser);
+}
+
 void ABaseMonster::BeginPlay()
 {
 	Super::BeginPlay();
@@ -116,19 +109,6 @@ void ABaseMonster::BeginPlay()
 void ABaseMonster::SetCharacterMovement()
 {
 	Super::SetCharacterMovement();
-
-	UCharacterMovementComponent* Comp = GetCharacterMovement();
-
-	Comp->bOrientRotationToMovement = false;
-	Comp->RotationRate = FRotator(0.0f, 500.0f, 0.0f);
-
-	Comp->JumpZVelocity = 700.0f;
-	Comp->AirControl = 0.35f;
-	Comp->MaxWalkSpeed = MaxSpeed;
-	Comp->MaxAcceleration = 500.f;
-
-	Comp->BrakingDecelerationWalking = 2000.0f;
-	Comp->BrakingDecelerationFalling = 1500.0f;
 }
 
 void ABaseMonster::SetInfos(UMonsterStatusDataAsset* InStats)

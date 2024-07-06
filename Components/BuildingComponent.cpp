@@ -41,28 +41,28 @@ void UBuildingComponent::TickComponent(float DeltaTime, ELevelTick TickType, FAc
 	if (!OwnerHero) return;
 	if (!(OwnerHero->GetStateComponent())) return;
 
-	if (OwnerHero->GetStateComponent()->GetState() == E_StateType::E_Build)
+	if (OwnerHero->GetStateComponent()->GetState() != E_StateType::E_Build) return;
+	
+	if (!tempBuilding) return;
+	
+	if (tempBuilding->GetBuildingState() == EBuildingState::E_Idle)
 	{
-		if (tempBuilding)
-		{
-			if (tempBuilding->GetBuildingState() == EBuildingState::E_Idle)
-			{
-				float MaxV = tempBuilding->GetScaledCol().X;
-				if (MaxV < tempBuilding->GetScaledCol().Y)
-					MaxV = tempBuilding->GetScaledCol().Y;
+		float MaxV = tempBuilding->GetScaledCol().X;
+		if (MaxV < tempBuilding->GetScaledCol().Y)
+			MaxV = tempBuilding->GetScaledCol().Y;
 				
-				float locationZ = OwnerHero->GetActorLocation().Z - 20;
-				FVector tempPos;
-				tempPos = OwnerHero->GetActorLocation() + OwnerHero->GetActorForwardVector() * (MaxV + 500.f) - locationZ;
+		float locationZ = OwnerHero->GetActorLocation().Z - 20;
+		FVector tempPos;
+		tempPos = OwnerHero->GetActorLocation() + OwnerHero->GetActorForwardVector() * (MaxV + 500.f) - locationZ;
 
-				tempBuilding->SetActorLocation(tempPos);
-				if (CanSpawnBuilding())
-					tempBuilding->SetBuildingColor(EBuildingColor::E_Blue);
-				else
-					tempBuilding->SetBuildingColor(EBuildingColor::E_Red);
-			}
-		}
+		tempBuilding->SetActorLocation(tempPos);
+		if (CanSpawnBuilding())
+			tempBuilding->SetBuildingColor(EBuildingColor::E_Blue);
+		else
+			tempBuilding->SetBuildingColor(EBuildingColor::E_Red);
 	}
+	
+	
 }
 
 void UBuildingComponent::BulidingInteraction(ABaseBuilding* building)

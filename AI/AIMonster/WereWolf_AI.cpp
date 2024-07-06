@@ -31,4 +31,17 @@ void AWereWolf_AI::BeginPlay()
 void AWereWolf_AI::SetCharacterMovement()
 {
 	Super::SetCharacterMovement();
+
+	UCharacterMovementComponent* Comp = GetCharacterMovement();
+
+	Comp->bOrientRotationToMovement = false;
+	Comp->RotationRate = FRotator(0.0f, 500.0f, 0.0f);
+
+	Comp->JumpZVelocity = 700.0f;
+	Comp->AirControl = 0.35f;
+	Comp->MaxWalkSpeed = MaxSpeed;
+	Comp->MaxAcceleration = 500.f;
+
+	Comp->BrakingDecelerationWalking = 2000.0f;
+	Comp->BrakingDecelerationFalling = 1500.0f;
 }

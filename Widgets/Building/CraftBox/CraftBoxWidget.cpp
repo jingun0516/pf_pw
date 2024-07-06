@@ -29,21 +29,15 @@ void UCraftBoxWidget::ExitWidgetFunc()
 
 void UCraftBoxWidget::InitCraftBoxSlots()
 {
-	if (InfoDatas)
+	if (!InfoDatas) return;
+	
+	for (int i = 0; i < InfoDatas->ToolArray.Num(); i++)
 	{
-		for (int i = 0; i < InfoDatas->ToolArray.Num(); i++)
+		if (InfoDatas->ToolArray[i])
 		{
-			if (InfoDatas->ToolArray[i])
-			{
-				CraftBoxSlot[i]->InitCraftBoxSlot(InfoDatas->ToolArray[i]);
-				CraftBoxSlot[i]->SetOwnerBuilding(OwnerBuilding);
-				CraftBoxSlot[i]->SetParentWidget(this);
-			}
+			CraftBoxSlot[i]->InitCraftBoxSlot(InfoDatas->ToolArray[i]);
+			CraftBoxSlot[i]->SetOwnerBuilding(OwnerBuilding);
+			CraftBoxSlot[i]->SetParentWidget(this);
 		}
 	}
-	else
-	{
-		UE_LOG(LogTemp, Log, TEXT("No InfoDatas"));
-	}
-
 }

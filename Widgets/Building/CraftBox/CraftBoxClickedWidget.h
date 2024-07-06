@@ -23,6 +23,20 @@ class PF_PW_API UCraftBoxClickedWidget : public UBaseBuildingWidget
 public:
 	virtual void NativeOnInitialized() override;
 
+	UFUNCTION()
+	void NoButtonClicked();
+
+	UFUNCTION()
+	void YesButtonClicked();
+
+	void SetSlots(TArray<UTexture2D*> itemsImage, TArray<int> counts);
+	void SetCurText(int cnt, int index);
+	void SetHorizonOpacity(int num, bool bCheck);
+
+	UFUNCTION()
+	void DoSubItemsForCraft();
+
+private:
 	UPROPERTY(meta = (BindWidget))
 	UImage* SelectedImage;
 
@@ -74,19 +88,6 @@ public:
 
 	UPROPERTY(meta = (BindWidget))
 	UButton* NoButton;
-
-	UFUNCTION()
-	void NoButtonClicked();
-
-	UFUNCTION()
-	void YesButtonClicked();
-
-	void SetSlots(TArray<UTexture2D*> itemsImage, TArray<int> counts);
-	void SetCurText(int cnt, int index);
-	void SetHorizonOpacity(int num, bool bCheck);
-
-	UFUNCTION()
-	void DoSubItemsForCraft();
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
 	UUserWidget* InterActionWidget;

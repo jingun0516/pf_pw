@@ -28,6 +28,7 @@ void UBaseBuildingWidget::ExitWidgetFunc()
 	SetVisibility(ESlateVisibility::Hidden);
 
 	APlayerController* PlayerController = GetWorld()->GetFirstPlayerController();
+
 	if (PlayerController)
 	{
 		FInputModeGameOnly InputMode;

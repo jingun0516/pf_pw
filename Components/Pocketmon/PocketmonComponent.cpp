@@ -36,11 +36,8 @@ void UPocketmonComponent::BeginPlay()
 	OwnerHero = Cast<AHero>(GetOwner());
 	if (!OwnerHero) return;
 	
-	if (OwnerHero)
-	{
-		OwnerHero->DPocketmonNextSlot.AddUFunction(this, "PocketmonNextSlot");
-		OwnerHero->DPocketmonPrevSlot.AddUFunction(this, "PocketmonPrevSlot");
-	}
+	OwnerHero->DPocketmonNextSlot.AddUFunction(this, "PocketmonNextSlot");
+	OwnerHero->DPocketmonPrevSlot.AddUFunction(this, "PocketmonPrevSlot");
 	
 	SetCurrentSlot(EPocketmonSlot::E_First);
 	SetNextPrevSlot();
@@ -58,16 +55,16 @@ float UPocketmonComponent::CalCatchPercent(ABaseMonster* pocketmon)
 	int PlayerLV = 1;
 	int MonsterLV = 1;
 
-	if (OwnerHero)
-	{
-		if (OwnerHero->GetStatusComponent())
-		{
-			PlayerLV = OwnerHero->GetStatusComponent()->GetLevel();
-			if (pocketmon->GetStatusComponent())
-				MonsterLV = pocketmon->GetStatusComponent()->GetLevel();
-		}
-	}
+	if (!OwnerHero) return 0.0f;
 
+	if (!(OwnerHero->GetStatusComponent())) return 0.0f;
+	
+	PlayerLV = OwnerHero->GetStatusComponent()->GetLevel();
+	if (!(pocketmon->GetStatusComponent())) return 0.0f;
+
+	MonsterLV = pocketmon->GetStatusComponent()->GetLevel();
+	
+	
 	float LVpercent = (float)(PlayerLV - MonsterLV);
 	AdditionalLVpercent = 0.04f * LVpercent;
 	if (AdditionalLVpercent >= 0.2f)		// 레벨차로 변하는 퍼센트 => 20%
@@ -161,11 +158,11 @@ ABaseMonster* UPocketmonComponent::CheckIsSpawned()
 EPocketmonSlot UPocketmonComponent::IsEmptySlot()
 {
 	if (!Pocketmons.FindRef(EPocketmonSlot::E_First)) return EPocketmonSlot::E_First;
-	else if (!Pocketmons.FindRef(EPocketmonSlot::E_Second)) return EPocketmonSlot::E_Second;
-	else if (!Pocketmons.FindRef(EPocketmonSlot::E_Third)) return EPocketmonSlot::E_Third;
-	else if (!Pocketmons.FindRef(EPocketmonSlot::E_Forth)) return EPocketmonSlot::E_Forth;
-	else if (!Pocketmons.FindRef(EPocketmonSlot::E_Fifth)) return EPocketmonSlot::E_Fifth;
-	else if (!Pocketmons.FindRef(EPocketmonSlot::E_Sixth)) return EPocketmonSlot::E_Sixth;
+	if (!Pocketmons.FindRef(EPocketmonSlot::E_Second)) return EPocketmonSlot::E_Second;
+	if (!Pocketmons.FindRef(EPocketmonSlot::E_Third)) return EPocketmonSlot::E_Third;
+	if (!Pocketmons.FindRef(EPocketmonSlot::E_Forth)) return EPocketmonSlot::E_Forth;
+	if (!Pocketmons.FindRef(EPocketmonSlot::E_Fifth)) return EPocketmonSlot::E_Fifth;
+	if (!Pocketmons.FindRef(EPocketmonSlot::E_Sixth)) return EPocketmonSlot::E_Sixth;
 
 	return EPocketmonSlot::E_None;
 }

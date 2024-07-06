@@ -18,7 +18,7 @@ class PF_PW_API UMainInventoryWidget : public UBasePartsMenuWidget
 public:
 	UInventorySlotsWidget* GetInventorySlotsWidget() { return WB_InventorySlots; }
 
-protected:
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (BindWidget))
+private:
+	UPROPERTY(EditAnywhere, meta = (BindWidget))
 	UInventorySlotsWidget* WB_InventorySlots;
 };

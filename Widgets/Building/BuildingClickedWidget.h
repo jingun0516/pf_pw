@@ -25,7 +25,37 @@ public:
 
 	FORCEINLINE UUserWidget* GetInterActionWidget() { return InterActionWidget; }
 	FORCEINLINE void SetInterActionWidget(UUserWidget* widget) { InterActionWidget = widget; }
+	FORCEINLINE void SetCanBuild(bool canBuild) { CanBuild = canBuild; }
+	FORCEINLINE UImage* GetSelectedImage() { return SelectedImage; }
+	FORCEINLINE void BrushSelectedImage(UTexture2D* image) { SelectedImage->SetBrushFromTexture(image); }
 
+	FORCEINLINE void SetItemClassAndCounts(TArray<TSubclassOf<ABaseItem>> InitemClass, TArray<int> InitemCounts)
+	{
+		this->itemClass = InitemClass;
+		this->itemCounts = InitemCounts;
+	}
+	FORCEINLINE void SetSpawnBuildingClass(TSubclassOf<ABaseBuilding> InBuildingClass) { SpawnBuildingClass = InBuildingClass; }
+	FORCEINLINE void SetitemClass(TArray<TSubclassOf<ABaseItem>> inItemClass) { itemClass = inItemClass; }
+	FORCEINLINE void SetitemCounts(TArray<int> initemCounts) { itemCounts = initemCounts; }
+	FORCEINLINE void SetCanCraft(bool InCanCraft) { CanCraft = InCanCraft; }
+
+	UFUNCTION()
+	void NoButtonClicked();
+
+	UFUNCTION()
+	void YesButtonClicked();
+
+	void SetSlots(TArray<UTexture2D*> itemsImage, TArray<int> counts);
+	void SetCurText(int cnt, int index);
+	void SetHorizonOpacity(int num, bool bCheck);
+
+	UFUNCTION()
+	void DoSubItemsForCraft();
+
+	UUserWidget* GetParentWidget() { return ParentWidget; }
+	void SetParentWidget(UUserWidget* InParentWidget) { ParentWidget = InParentWidget; }
+
+private:
 	UPROPERTY(meta = (BindWidget))
 	UImage* SelectedImage;
 
@@ -68,12 +98,6 @@ public:
 	UPROPERTY(meta = (BindWidget))
 	UHorizontalBox* Horizon4;
 
-	FORCEINLINE void SetItemClassAndCounts(TArray<TSubclassOf<ABaseItem>> InitemClass, TArray<int> InitemCounts)
-	{
-		this->itemClass = InitemClass;
-		this->itemCounts = InitemCounts;
-	}
-	FORCEINLINE void SetSpawnBuildingClass(TSubclassOf<ABaseBuilding> InBuildingClass) { SpawnBuildingClass = InBuildingClass; }
 	bool CanBuild = false;
 	bool CanCraft = false;
 	TArray<TSubclassOf<ABaseItem>> itemClass;
@@ -87,23 +111,8 @@ public:
 	UPROPERTY(meta = (BindWidget))
 	UButton* NoButton;
 
-	UFUNCTION()
-	void NoButtonClicked();
-
-	UFUNCTION()
-	void YesButtonClicked();
-
-	void SetSlots(TArray<UTexture2D*> itemsImage, TArray<int> counts);
-	void SetCurText(int cnt, int index);
-	void SetHorizonOpacity(int num, bool bCheck);
-
-	UFUNCTION()
-	void DoSubItemsForCraft();
-
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
 	UUserWidget* InterActionWidget;
 
-	UUserWidget* GetParentWidget() { return ParentWidget; }
-	void SetParentWidget(UUserWidget* InParentWidget) { ParentWidget = InParentWidget; }
 	UUserWidget* ParentWidget;
 };

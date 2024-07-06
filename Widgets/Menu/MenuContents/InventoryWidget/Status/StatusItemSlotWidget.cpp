@@ -83,18 +83,16 @@ bool UStatusItemSlotWidget::NativeOnDrop(const FGeometry& InGeometry, const FDra
 				OwnerHero->GetInventoryComponent()->SetNullItem(slot->GetIndex());
 			}
 
-			if (dropTool)
+			if (OwnerHero->GetToolComponent()->GetCurrentSlot() == GetSlot())
 			{
-				if (OwnerHero->GetToolComponent()->GetCurrentSlot() == GetSlot())
-				{
-					OwnerHero->GetToolComponent()->DetachTool();
-				}
-				OwnerHero->GetToolComponent()->AddTool(GetSlot(), dropTool);
-				if (OwnerHero->GetToolComponent()->GetCurrentSlot() == GetSlot())
-				{
-					OwnerHero->GetToolComponent()->EquipTool(OwnerHero->GetToolComponent()->GetCurrentSlot());
-				}
+				OwnerHero->GetToolComponent()->DetachTool();
 			}
+			OwnerHero->GetToolComponent()->AddTool(GetSlot(), dropTool);
+			if (OwnerHero->GetToolComponent()->GetCurrentSlot() == GetSlot())
+			{
+				OwnerHero->GetToolComponent()->EquipTool(OwnerHero->GetToolComponent()->GetCurrentSlot());
+			}
+			
 		}
 	}
 	else if (UStatusItemSlotWidget* itemSlot = Cast<UStatusItemSlotWidget>(oper->Payload))

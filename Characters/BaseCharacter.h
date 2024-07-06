@@ -21,6 +21,7 @@ class UPocketmonComponent;
 class UInventoryComponent;
 class ABaseTool;
 class UUserWidget;
+class ABaseAI;
 
 UCLASS()
 class PF_PW_API ABaseCharacter : public ACharacter
@@ -68,7 +69,6 @@ public:
 	
 
 	TSubclassOf<UUserWidget> DamageWidgetClass;
-	void CalDamageDirection(FVector ActorLocation, FVector DCLocation, FVector forwardVector);
 protected:
 	virtual void BeginPlay() override;
 	ABaseCharacter* PlayerC;

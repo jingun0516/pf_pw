@@ -78,57 +78,47 @@ void UCraftBoxItemWidget::InitCraftBoxSlot(UToolsDataAsset* InDATool)
 
 void UCraftBoxItemWidget::SetCraftState()
 {
-	if (SpawnToolClass)
-	{
-		ABuilding_CraftBox* CraftBox = Cast<ABuilding_CraftBox>(OwnerBuilding);
+	if (!SpawnToolClass) return;
+	
+	ABuilding_CraftBox* CraftBox = Cast<ABuilding_CraftBox>(OwnerBuilding);
 
-		if (!CraftBox) return;
+	if (!CraftBox) return;
 
-		if (CraftBox->GetBuildingState() == EBuildingState::E_Idle)
-		{
-			if (CraftBox->GetBuildingClickedWidget())
-			{
-				UE_LOG(LogTemp, Log, TEXT("ClickedWidget Yes"));
-				CraftBox->SetToolImage(SpawnToolImage);
-				CraftBoxClickedWidget = CraftBox->GetBuildingClickedWidget();
-				CraftBoxClickedWidget->SetVisibility(ESlateVisibility::Visible);
-				CraftBoxClickedWidget->InterActionWidget = this;
-				CraftBoxClickedWidget->SelectedImage->SetBrushFromTexture(SpawnToolImage);
-				CraftBoxClickedWidget->SetSlots(RequiredImages, RequiredCounts);
+	if (CraftBox->GetBuildingState() != EBuildingState::E_Idle) return;
+	
+	if (!CraftBox->GetBuildingClickedWidget()) return;
+		
+	UE_LOG(LogTemp, Log, TEXT("ClickedWidget Yes"));
+	CraftBox->SetToolImage(SpawnToolImage);
+	CraftBoxClickedWidget = CraftBox->GetBuildingClickedWidget();
+	CraftBoxClickedWidget->SetVisibility(ESlateVisibility::Visible);
+	CraftBoxClickedWidget->SetInterActionWidget(this);
+	CraftBoxClickedWidget->BrushSelectedImage(SpawnToolImage);
+	CraftBoxClickedWidget->SetSlots(RequiredImages, RequiredCounts);
 				
-				if (OwnerPlayer)
-				{
-					bool passed = true;
+	if (!OwnerPlayer) return;
+	bool passed = true;
 
-					TArray<TSubclassOf<ABaseItem>> tempItemArray;
-					TArray<int> tempCountArray;
+	TArray<TSubclassOf<ABaseItem>> tempItemArray;
+	TArray<int> tempCountArray;
 
-					for (int i = 0; i < RequiredItems.Num(); i++)
-					{
-						int CurItemCount = OwnerPlayer->GetInventoryComponent()->GetNumsOfItem(RequiredItems[i]);
-						bool bCheck = (CurItemCount >= RequiredCounts[i]); 
-						tempItemArray.Add(RequiredItems[i]);
-						tempCountArray.Add(RequiredCounts[i]);
-						if (!bCheck)
-						{
-							passed = false;
-						}
-						CraftBoxClickedWidget->SetHorizonOpacity(i, bCheck);
-						CraftBoxClickedWidget->SetCurText(CurItemCount, i);
-					}
-					if (passed)
-					{
-						CraftBoxClickedWidget->itemClass = tempItemArray;
-						CraftBoxClickedWidget->itemCounts = tempCountArray;
-						CraftBoxClickedWidget->CanCraft = true;
-					}
-				}
-			}
-		}
-	}
-	else
+	for (int i = 0; i < RequiredItems.Num(); i++)
 	{
-		UE_LOG(LogTemp, Log, TEXT("%s"), *this->GetName());
+		int CurItemCount = OwnerPlayer->GetInventoryComponent()->GetNumsOfItem(RequiredItems[i]);
+		bool bCheck = (CurItemCount >= RequiredCounts[i]); 
+		tempItemArray.Add(RequiredItems[i]);
+		tempCountArray.Add(RequiredCounts[i]);
+		if (!bCheck)			// 하나라도 부족한 재료가 있으면
+		{
+			passed = false;
+		}
+		CraftBoxClickedWidget->SetHorizonOpacity(i, bCheck);
+		CraftBoxClickedWidget->SetCurText(CurItemCount, i);
 	}
-
+	if (passed)
+	{
+		CraftBoxClickedWidget->SetitemClass(tempItemArray);
+		CraftBoxClickedWidget->SetitemCounts(tempCountArray);
+		CraftBoxClickedWidget->SetCanCraft(true);
+	}
 }

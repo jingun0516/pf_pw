@@ -114,19 +114,18 @@ void ACatchActor::OnCatchDestroyed(AActor* DestroyedActor)
 	if (!CheckCatch)
 	{
 		GetWorld()->SpawnActor<ACatchFailActor>(GetActorLocation(), FRotator());
-		if (monster)
-		{
-			monster->SetActorHiddenInGame(false);
-			monster->SetActorEnableCollision(true);
-			if (aimonster)
-				aimonster->ActivateAIController(true);
-			UParticleSystemComponent* SpawnedEmitter = UGameplayStatics::SpawnEmitterAtLocation
-			(
-				this,
-				effect,
-				GetActorLocation()
-			);
-		}
+		if (!monster) return;
+		
+		monster->SetActorHiddenInGame(false);
+		monster->SetActorEnableCollision(true);
+		if (aimonster)
+			aimonster->ActivateAIController(true);
+		UParticleSystemComponent* SpawnedEmitter = UGameplayStatics::SpawnEmitterAtLocation
+		(
+			this,
+			effect,
+			GetActorLocation()
+		);
 	}
 	else
 	{
@@ -140,11 +139,10 @@ void ACatchActor::OnCatchDestroyed(AActor* DestroyedActor)
 				
 				monster->SetActorHiddenInGame(true);
 				monster->SetActorEnableCollision(false);
-				if (aimonster)
-				{
-					aimonster->SetupTeamAIController();
-					aimonster->ActivateAIController(false);
-				}
+				if (!aimonster) return;
+				
+				aimonster->SetupTeamAIController();
+				aimonster->ActivateAIController(false);
 			}
 		}
 		else

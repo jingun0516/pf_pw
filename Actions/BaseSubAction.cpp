@@ -1,11 +1,6 @@
 #include "Actions/BaseSubAction.h"
 #include "Helper.h"
 
-UBaseSubAction::UBaseSubAction()
-{
-
-}
-
 void UBaseSubAction::DoAction()
 {
 	Super::DoAction();

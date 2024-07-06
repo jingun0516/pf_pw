@@ -61,27 +61,26 @@ bool UInventorySlotWidget::NativeOnDrop(const FGeometry& InGeometry, const FDrag
 	UDragDrop* oper = Cast<UDragDrop>(InOperation);
 
 	if (!oper) return false;
+
 	if (UInventorySlotWidget* slot = Cast<UInventorySlotWidget>(oper->Payload))
 	{
 		FSlateBrush tempBrush = InvenImage->GetBrush();
 		FText tempText = InvenText->GetText();
 
-		if (slot)
-		{
-			ABaseItem* tempItem = OwnerHero->GetInventoryComponent()->GetItem(index);		  // 원래 있던 것
-			ABaseItem* dropItem = OwnerHero->GetInventoryComponent()->GetItem(slot->index);   // 드랍될 것
+		ABaseItem* tempItem = OwnerHero->GetInventoryComponent()->GetItem(index);		  // 원래 있던 것
+		ABaseItem* dropItem = OwnerHero->GetInventoryComponent()->GetItem(slot->index);   // 드랍될 것
 
-			UE_LOG(LogTemp, Log, TEXT("tempItem Index: %d     dropItem Index: %d"), index, slot->index);
+		UE_LOG(LogTemp, Log, TEXT("tempItem Index: %d     dropItem Index: %d"), index, slot->index);
 
-			if (dropItem)
-				OwnerHero->GetInventoryComponent()->SetItem(index, dropItem);
-			else
-				OwnerHero->GetInventoryComponent()->SetNullItem(index);
-			if (tempItem)
-				OwnerHero->GetInventoryComponent()->SetItem(slot->index, tempItem);
-			else
-				OwnerHero->GetInventoryComponent()->SetNullItem(slot->index);
-		}
+		if (dropItem)
+			OwnerHero->GetInventoryComponent()->SetItem(index, dropItem);
+		else
+			OwnerHero->GetInventoryComponent()->SetNullItem(index);
+		if (tempItem)
+			OwnerHero->GetInventoryComponent()->SetItem(slot->index, tempItem);
+		else
+			OwnerHero->GetInventoryComponent()->SetNullItem(slot->index);
+		
 		UE_LOG(LogTemp, Log, TEXT("%s"), *this->GetName());
 	}
 	else if (UStatusItemSlotWidget* toolSlot = Cast<UStatusItemSlotWidget>(oper->Payload))

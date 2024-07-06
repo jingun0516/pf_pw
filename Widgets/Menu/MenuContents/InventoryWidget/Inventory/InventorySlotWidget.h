@@ -26,17 +26,24 @@ public:
 	void SetInvenText(int count);
 	void SetInvenImage(UTexture2D* texture);
 
+	UFUNCTION(BlueprintCallable)
+	void SetIndex(int InIndex) { index = InIndex; }
+
+	FORCEINLINE int GetIndex() { return index; }
+
+	FORCEINLINE void BrushInvenImage(UTexture2D* texture) { InvenImage->SetBrushFromTexture(texture); }
+	FORCEINLINE void SetInvenTextVisibility(bool visible) {
+		if (visible) InvenText->SetVisibility(ESlateVisibility::SelfHitTestInvisible);
+		else InvenText->SetVisibility(ESlateVisibility::Hidden);
+	}
+
+private:
 	UPROPERTY(meta = (BindWidget))
 	UImage* InvenImage;
 
 	UPROPERTY(meta = (BindWidget))
 	UTextBlock* InvenText;
 
-	UFUNCTION(BlueprintCallable)
-	void SetIndex(int InIndex) { index = InIndex; }
-
-	FORCEINLINE int GetIndex() { return index; }
-private:
 	int index;
 	bool bIsDragging;
 	FVector2D DragStartPosition;

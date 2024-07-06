@@ -29,7 +29,7 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void InitCraftBoxSlots();
 
-protected:
+private:
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
 	UExitButtonWidget* ExitWidget;
 

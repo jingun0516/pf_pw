@@ -13,9 +13,6 @@ class PF_PW_API UBaseSubAction : public UBaseAction
 {
 	GENERATED_BODY()
 
-public:
-	UBaseSubAction();
-
 protected:
 	virtual void DoAction() override;
 	virtual void TickAction() override;

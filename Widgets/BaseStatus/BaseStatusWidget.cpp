@@ -16,15 +16,6 @@ void UBaseStatusWidget::NativeOnInitialized()
 
 void UBaseStatusWidget::SetPocketmon()
 {
-	if (PocketmonComponent)
-	{
-		UE_LOG(LogTemp, Log, TEXT("YES PocketmonComponent"));
-	}
-	else
-	{
-		UE_LOG(LogTemp, Log, TEXT("NO PocketmonComponent"));
-
-	}
 	if (ABaseMonster* PrevMonster = PocketmonComponent->GetPocketmon(PocketmonComponent->GetPrevSlot()))
 	{
 		UTexture2D* prevTexture = PrevMonster->GetTexture();

@@ -35,51 +35,45 @@ void AWorkTimeActor::Tick(float DeltaTime)
 
 void AWorkTimeActor::SetLeftTime(float time)
 {
-	if (WorkTimeWidget)
-	{
-		UUserWidget* Widget = WorkTimeWidget->GetUserWidgetObject();
-		if (Widget)
-		{
-			UTextBlock* TextBlockWidget = Cast<UTextBlock>(Widget->GetWidgetFromName(TEXT("BP_LeftWorkTime")));
-			if (TextBlockWidget)
-			{
-				TextBlockWidget->SetText(FText::Format(FText::FromString(TEXT("LeftWorkTime\n{0} seconds")), FText::AsNumber(time)));
-			}
-		}
-	}
+	if (!WorkTimeWidget) return;
+	
+	UUserWidget* Widget = WorkTimeWidget->GetUserWidgetObject();
+	if (!Widget) return;
+	
+	UTextBlock* TextBlockWidget = Cast<UTextBlock>(Widget->GetWidgetFromName(TEXT("BP_LeftWorkTime")));
+
+	if (!TextBlockWidget) return;
+	
+	TextBlockWidget->SetText(FText::Format(FText::FromString(TEXT("LeftWorkTime\n{0} seconds")), FText::AsNumber(time)));
 }
 
 void AWorkTimeActor::SetImage(UTexture2D* image)
 {
-	if (WorkTimeWidget)
-	{
-		UUserWidget* Widget = WorkTimeWidget->GetUserWidgetObject();
-		if (Widget)
-		{
-			UImage* ImageWidget = Cast<UImage>(Widget->GetWidgetFromName(TEXT("BP_Image")));
-			if (ImageWidget)
-			{
-				ImageWidget->SetBrushFromTexture(image);
-			}
-		}
-	}
+	if (!WorkTimeWidget) return;
+	
+	UUserWidget* Widget = WorkTimeWidget->GetUserWidgetObject();
+	if (!Widget) return;
+	
+	UImage* ImageWidget = Cast<UImage>(Widget->GetWidgetFromName(TEXT("BP_Image")));
+	if (!ImageWidget) return;
+		
+	ImageWidget->SetBrushFromTexture(image);
 }
 
 void AWorkTimeActor::SetWorkDone()
 {
-	if (WorkTimeWidget)
-	{
-		UUserWidget* Widget = WorkTimeWidget->GetUserWidgetObject();
-		if (Widget)
-		{
-			UTextBlock* TextBlockWidget = Cast<UTextBlock>(Widget->GetWidgetFromName(TEXT("BP_LeftWorkTime")));
-			if (TextBlockWidget)
-			{
-				FText NewText = FText::FromString(TEXT("Jobs Done"));
-				TextBlockWidget->SetText(NewText);
-			}
-		}
-	}
+	if (!WorkTimeWidget) return;
+	
+	UUserWidget* Widget = WorkTimeWidget->GetUserWidgetObject();
+	if (!Widget) return;
+	
+	UTextBlock* TextBlockWidget = Cast<UTextBlock>(Widget->GetWidgetFromName(TEXT("BP_LeftWorkTime")));
+
+	if (!TextBlockWidget) return;
+	
+	FText NewText = FText::FromString(TEXT("Jobs Done"));
+	TextBlockWidget->SetText(NewText);
+	
 	SetLifeSpan(2.f);
 }
 

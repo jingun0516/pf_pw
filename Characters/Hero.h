@@ -48,6 +48,8 @@ DECLARE_LOG_CATEGORY_EXTERN(HeroLog, Log, All);
 class UInputDataAsset;
 class UUserStatusComponent;
 class UToBuildWidget;
+class ABaseAI;
+class ABaseMonster;
 
 UCLASS()
 class PF_PW_API AHero : public ABaseCharacter
@@ -138,6 +140,13 @@ public:
 	FORCEINLINE UCameraComponent* GetCamera() const { return Camera; }
 	FORCEINLINE UUserStatusComponent* GetUserStatusComponent() { return UserStatusComponent; }
 
+	virtual float TakeDamage
+	(
+		float DamageAmount,
+		struct FDamageEvent const& DamageEvent,
+		class AController* EventInstigator,
+		AActor* DamageCauser
+	) override;
 private:
 	void CreateCamera();
 	void SetInfoWithData(UInputDataAsset* inData);

@@ -16,7 +16,7 @@ class PF_PW_API UToBuildSlotsWidget : public UBaseBuildingWidget
 	GENERATED_BODY()
 
 	
-protected:
+private:
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
 	TMap<int, UToBuildSlotWidget*> ToBuildSlot;
 };

@@ -28,6 +28,7 @@ void UStatusComponent::BeginPlay()
 	Super::BeginPlay();
 
 	OwnerCharacter = Cast<ABaseCharacter>(GetOwner());
+	OwnerHero = Cast<AHero>(OwnerCharacter);
 
 	DOnExpAdded.AddUFunction(this, "OnExpAdded");
 	DOnLevelUp.AddUFunction(this, "OnLevelUp");
@@ -88,28 +89,28 @@ void UStatusComponent::AddEXP(int InExp)
 
 void UStatusComponent::OnExpAdded()
 {
-	if (LevelUpDataTable)
+	if (!LevelUpDataTable) return;
+
+	for (int32 i = 1; i <= 10; i++)
 	{
-		for (int32 i = 1; i <= 10; i++)
+		FLevelUpTableRow* LevelUpTableRow = LevelUpDataTable->FindRow<FLevelUpTableRow>(FName(*(FString::FormatAsNumber(GetLevel()))), FString(""));
+
+		if (!LevelUpTableRow) return;
+
+		if (GetEXP() >= (*LevelUpTableRow).TotalExp)
 		{
-			FLevelUpTableRow* LevelUpTableRow = LevelUpDataTable->FindRow<FLevelUpTableRow>(FName(*(FString::FormatAsNumber(GetLevel()))), FString(""));
-
-			if (!LevelUpTableRow) return;
-
-			if (GetEXP() >= (*LevelUpTableRow).TotalExp)
-			{
-				LevelUp();
-				UE_LOG(LogTemp, Log, TEXT("LEVEL UP!"));
-			}
+			LevelUp();
+			UE_LOG(LogTemp, Log, TEXT("LEVEL UP!"));
 		}
-		FLevelUpTableRow* LevelUpTableRowNext = LevelUpDataTable->FindRow<FLevelUpTableRow>(FName(*(FString::FormatAsNumber(GetLevel()))), FString(""));
-		FLevelUpTableRow* LevelUpTableRowPrev = LevelUpDataTable->FindRow<FLevelUpTableRow>(FName(*(FString::FormatAsNumber(GetLevel() - 1))), FString(""));
-
-		if (LevelUpTableRowNext)
-			NextEXP = (*LevelUpTableRowNext).ExpToNextLevel;
-		if(LevelUpTableRowPrev)
-			PrevEXP = (*LevelUpTableRowPrev).ExpToNextLevel;
 	}
+	FLevelUpTableRow* LevelUpTableRowNext = LevelUpDataTable->FindRow<FLevelUpTableRow>(FName(*(FString::FormatAsNumber(GetLevel()))), FString(""));
+	FLevelUpTableRow* LevelUpTableRowPrev = LevelUpDataTable->FindRow<FLevelUpTableRow>(FName(*(FString::FormatAsNumber(GetLevel() - 1))), FString(""));
+
+	if (LevelUpTableRowNext)
+		NextEXP = (*LevelUpTableRowNext).ExpToNextLevel;
+	if(LevelUpTableRowPrev)
+		PrevEXP = (*LevelUpTableRowPrev).ExpToNextLevel;
+	
 
 	if (AHero* hero = Cast<AHero>(OwnerCharacter))
 	{
@@ -120,20 +121,20 @@ void UStatusComponent::OnExpAdded()
 
 void UStatusComponent::OnLevelUp()
 {
-	if (AHero* hero = Cast<AHero>(OwnerCharacter))
-	{
-		hero->SetLevelWidget(GetLevel());
-		SetStatusPoint(GetStatusPoint() + 1);
-		hero->GetMenuWidget()->GetInventoryWidget()->GetMainStatusWidget()->GetUserStatusWidget()->SetStatusPointText(GetStatusPoint());
-	}
+	if (!OwnerHero) return;
+	
+	OwnerHero->SetLevelWidget(GetLevel());
+	SetStatusPoint(GetStatusPoint() + 1);
+	OwnerHero->GetMenuWidget()->GetInventoryWidget()->GetMainStatusWidget()->GetUserStatusWidget()->SetStatusPointText(GetStatusPoint());
+	
 }
 
 void UStatusComponent::OnSetHP()
 {
-	if (AHero* hero = Cast<AHero>(OwnerCharacter))
+	if (OwnerHero)
 	{
-		if(hero->GetBaseStatusWidget())
-			hero->SetHPBar(GetHP(), GetMaxHP());
+		if(OwnerHero->GetBaseStatusWidget())
+			OwnerHero->SetHPBar(GetHP(), GetMaxHP());
 	}
 	if (ABaseMonster* monster = Cast<ABaseMonster>(OwnerCharacter))
 	{

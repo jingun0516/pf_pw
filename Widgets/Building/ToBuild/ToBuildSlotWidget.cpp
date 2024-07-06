@@ -41,57 +41,57 @@ void UToBuildSlotWidget::InitToBuildSlot(UDA_ToBuildDataAsset* InDaBuilding)
 
 void UToBuildSlotWidget::ToBuildSlotClicked()
 {
-	if (SpawnBuildingClass)
+	if (!SpawnBuildingClass) return;
+	
+	UE_LOG(LogTemp, Log, TEXT("SpawnBuildingClass: %s"), *SpawnBuildingClass->GetName());
+	if (OwnerPlayer->GetStateComponent()->GetState() != E_StateType::E_Idle) return;
+
+	FActorSpawnParameters SpawnParam;
+	SpawnParam.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+	ABaseBuilding* building = GetWorld()->SpawnActor<ABaseBuilding>(SpawnBuildingClass, SpawnParam);
+	if (!building) return;
+	BuildingClickedWidget = building->GetBuildingClickedWidget();
+	if (!BuildingClickedWidget) return;
+	building->Destroy();
+
+	BuildingClickedWidget->SetVisibility(ESlateVisibility::Visible);
+	BuildingClickedWidget->SetInterActionWidget(this);
+	BuildingClickedWidget->BrushSelectedImage(SpawnBuildingImage);
+	BuildingClickedWidget->SetSlots(RequiredImages, RequiredCounts);
+
+	if (!OwnerPlayer) return;
+	
+	BuildingClickedWidget->SetParentWidget(Cast<UUserWidget>(OwnerPlayer->GetToBuildWidget()));
+
+	bool passed = true;
+
+	TArray<TSubclassOf<ABaseItem>> tempItemArray;
+	TArray<int> tempCountArray;
+
+	for (int i = 0; i < RequiredItems.Num(); i++)
 	{
-		UE_LOG(LogTemp, Log, TEXT("SpawnBuildingClass: %s"), *SpawnBuildingClass->GetName());
-		if (OwnerPlayer->GetStateComponent()->GetState() != E_StateType::E_Idle) return;
-
-		FActorSpawnParameters SpawnParam;
-		SpawnParam.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
-		ABaseBuilding* building = GetWorld()->SpawnActor<ABaseBuilding>(SpawnBuildingClass, SpawnParam);
-		if (!building) return;
-		BuildingClickedWidget = building->GetBuildingClickedWidget();
-		if (!BuildingClickedWidget) return;
-		building->Destroy();
-
-		BuildingClickedWidget->SetVisibility(ESlateVisibility::Visible);
-		BuildingClickedWidget->InterActionWidget = this;
-		BuildingClickedWidget->SelectedImage->SetBrushFromTexture(SpawnBuildingImage);
-		BuildingClickedWidget->SetSlots(RequiredImages, RequiredCounts);
-
-		if (OwnerPlayer)
+		int CurItemCount = OwnerPlayer->GetInventoryComponent()->GetNumsOfItem(RequiredItems[i]);
+		bool bCheck = (CurItemCount >= RequiredCounts[i]);
+		tempItemArray.Add(RequiredItems[i]);
+		tempCountArray.Add(RequiredCounts[i]);
+		if (!bCheck)
 		{
-			BuildingClickedWidget->SetParentWidget(Cast<UUserWidget>(OwnerPlayer->GetToBuildWidget()));
-
-			bool passed = true;
-
-			TArray<TSubclassOf<ABaseItem>> tempItemArray;
-			TArray<int> tempCountArray;
-
-			for (int i = 0; i < RequiredItems.Num(); i++)
-			{
-				int CurItemCount = OwnerPlayer->GetInventoryComponent()->GetNumsOfItem(RequiredItems[i]);
-				bool bCheck = (CurItemCount >= RequiredCounts[i]);
-				tempItemArray.Add(RequiredItems[i]);
-				tempCountArray.Add(RequiredCounts[i]);
-				if (!bCheck)
-				{
-					passed = false;
-				}
-				BuildingClickedWidget->SetHorizonOpacity(i, bCheck);
-				BuildingClickedWidget->SetCurText(CurItemCount, i);
-			}
-			if (passed)
-			{
-				UE_LOG(LogTemp, Log, TEXT("CanBuild"));
-				BuildingClickedWidget->SetSpawnBuildingClass(SpawnBuildingClass);
-				BuildingClickedWidget->SetItemClassAndCounts(tempItemArray, tempCountArray);
-				BuildingClickedWidget->CanBuild = true;
-			}
-			else
-			{
-				UE_LOG(LogTemp, Log, TEXT("CantBuild"));
-			}
+			passed = false;					// 하나라도 재료가 모자라면
 		}
+		BuildingClickedWidget->SetHorizonOpacity(i, bCheck);
+		BuildingClickedWidget->SetCurText(CurItemCount, i);
 	}
+	if (passed)
+	{
+		UE_LOG(LogTemp, Log, TEXT("CanBuild"));
+		BuildingClickedWidget->SetSpawnBuildingClass(SpawnBuildingClass);
+		BuildingClickedWidget->SetItemClassAndCounts(tempItemArray, tempCountArray);
+		BuildingClickedWidget->SetCanBuild(true);
+	}
+	else
+	{
+		UE_LOG(LogTemp, Log, TEXT("CantBuild"));
+	}
+	
+	
 }

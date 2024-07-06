@@ -23,27 +23,23 @@ void UCraftBoxClickedWidget::NoButtonClicked()
 
 void UCraftBoxClickedWidget::YesButtonClicked()
 {
-	if (CanCraft)
+	if (!CanCraft) return;
+	
+	UE_LOG(LogTemp, Log, TEXT("CanCraft"));
+	if (UCraftBoxItemWidget* widget = Cast<UCraftBoxItemWidget>(InterActionWidget))
 	{
-		UE_LOG(LogTemp, Log, TEXT("CanCraft"));
-		if (UCraftBoxItemWidget* widget = Cast<UCraftBoxItemWidget>(InterActionWidget))
-		{
-			widget->SpawnTool();
-			widget->GetParentWidget()->SetVisibility(ESlateVisibility::Hidden);
+		widget->SpawnTool();
+		widget->GetParentWidget()->SetVisibility(ESlateVisibility::Hidden);
 
-			SET_GAME_MODE_GAME_ONLY()
-		}
-		UE_LOG(LogTemp, Log, TEXT("ItemClassNum: %d      ItemCountsNum: %d"), itemClass.Num(), itemCounts.Num());
-		DoSubItemsForCraft();
-		itemClass.Empty();
-		itemCounts.Empty();
+		SET_GAME_MODE_GAME_ONLY()
+	}
+	UE_LOG(LogTemp, Log, TEXT("ItemClassNum: %d      ItemCountsNum: %d"), itemClass.Num(), itemCounts.Num());
+	DoSubItemsForCraft();
+	itemClass.Empty();
+	itemCounts.Empty();
 
-		SetVisibility(ESlateVisibility::Hidden);
-	}
-	else
-	{
-		UE_LOG(LogTemp, Log, TEXT("CanNotCraft"));
-	}
+	SetVisibility(ESlateVisibility::Hidden);
+	
 	CanCraft = false;
 }
 

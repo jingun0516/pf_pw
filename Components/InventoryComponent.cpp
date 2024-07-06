@@ -32,69 +32,24 @@ void UInventoryComponent::AddItems(ABaseItem* item)
 	UE_LOG(LogTemp, Log, TEXT("additem!!"));
 	if (item->GetCountable() == ECountableType::E_Countable)
 	{
-		bool bFound = false;
-		for (int i = 0; i < 42; i++)
+		bool bFound = CheckAddCountable(item);
+
+		if(!bFound)		// 같은 Countable Item이 인벤토리에 없을 경우
 		{
-			if (InventoryItems[i] != nullptr && InventoryItems[i]->GetClass() == item->GetClass())
-			{
-				ABaseItem* findItem = InventoryItems[i];
-				int count = findItem->GetCounts() + item->GetCounts();
-				UE_LOG(LogTemp, Log, TEXT("findItem->Count: %d // item->Count: %d // count: %d"), findItem->GetCounts(), item->GetCounts(), count);
-				findItem->SetCounts(count);
-				item->SetActorHiddenInGame(true);
-				item->SetActorEnableCollision(false);
-				if (!(OwnerHero->GetMenuWidget())) return;
-				TMap<int, UInventorySlotWidget*> slots = OwnerHero->GetMenuWidget()->GetInventoryWidget()->GetMainInventoryWidget()->GetInventorySlotsWidget()->GetInventorySlot();
-				if (!slots[i]) return;
+			int emptySlot = GetEmptySlot();
+			
+			if (emptySlot == -1) return;
 
-				slots[i]->SetInvenText(findItem->GetCounts());
-				slots[i]->InvenText->SetVisibility(ESlateVisibility::Visible);
-
-				bFound = true;
-				UE_LOG(LogTemp, Log, TEXT("Countable Yes Find"));
-				break;
-			}
-		}
-
-		if(!bFound)
-		{
-			if (GetEmptySlot() != -1)
-			{
-				int emptySlot = GetEmptySlot();
-				InventoryItems[emptySlot] = item;
-				item->SetActorHiddenInGame(true);
-				item->SetActorEnableCollision(false);
-				if (OwnerHero->GetMenuWidget())
-				{
-					TMap<int, UInventorySlotWidget*> slots = OwnerHero->GetMenuWidget()->GetInventoryWidget()->GetMainInventoryWidget()->GetInventorySlotsWidget()->GetInventorySlot();
-					if (slots[emptySlot])
-					{
-						slots[emptySlot]->InvenImage->SetBrushFromTexture(item->texture);
-						slots[emptySlot]->SetInvenText(item->GetCounts());
-						slots[emptySlot]->InvenText->SetVisibility(ESlateVisibility::Visible);
-					}
-				}
-			}
+			SetItem(emptySlot, item);
 		}
 	}
 	else
 	{
-		if (GetEmptySlot() != -1)
-		{
-			int emptySlot = GetEmptySlot();
-			InventoryItems[emptySlot] = item;
-			item->SetActorHiddenInGame(true);
-			item->SetActorEnableCollision(false);
-			if (OwnerHero->GetMenuWidget())
-			{
-				TMap<int, UInventorySlotWidget*> slots = OwnerHero->GetMenuWidget()->GetInventoryWidget()->GetMainInventoryWidget()->GetInventorySlotsWidget()->GetInventorySlot();
-				if (slots[emptySlot])
-				{
-					slots[emptySlot]->InvenImage->SetBrushFromTexture(item->texture);
-				}
-			}
-		}
-
+		int emptySlot = GetEmptySlot();
+		if (emptySlot == -1) return;
+		
+		SetItem(emptySlot, item);
+		
 		UE_LOG(LogTemp, Log, TEXT("UnCountable"));
 	}
 }
@@ -109,32 +64,31 @@ ABaseItem* UInventoryComponent::GetItem(int index)
 
 void UInventoryComponent::SetItem(int index, ABaseItem* inItem)
 {
+	if (!inItem) return;
+	UE_LOG(LogTemp, Log, TEXT("SetItem Execute : %s"), *inItem->GetName());
 	InventoryItems[index] = inItem;
+	inItem->SetActorHiddenInGame(true);
+	inItem->SetActorEnableCollision(false);
 	TMap<int, UInventorySlotWidget*> slots = OwnerHero->GetMenuWidget()->GetInventoryWidget()->GetMainInventoryWidget()->GetInventorySlotsWidget()->GetInventorySlot();
 
+	
+	if (!slots[index] || !inItem->texture) return;
+
+	slots[index]->BrushInvenImage(inItem->texture);
 	if (inItem->GetCountable() == ECountableType::E_Countable)
 	{
-		if (slots[index])
-		{
-			slots[index]->InvenImage->SetBrushFromTexture(inItem->texture);
-			slots[index]->SetInvenText(inItem->GetCounts());
-			slots[index]->InvenText->SetVisibility(ESlateVisibility::Visible);
-		}
+		slots[index]->SetInvenText(inItem->GetCounts());
+		slots[index]->SetInvenTextVisibility(true);
 	}
 	else
 	{
-		if (slots[index])
-		{
-			slots[index]->InvenImage->SetBrushFromTexture(inItem->texture);
-			slots[index]->InvenText->SetVisibility(ESlateVisibility::Hidden);
-		}
-
+		slots[index]->SetInvenTextVisibility(false);
 	}
 }
 
 int UInventoryComponent::GetEmptySlot()
 {
-	for (int index = 0; index < 42; index++)
+	for (int index = 0; index < InvenSize; index++)
 	{
 		if (InventoryItems[index] == nullptr)
 		{
@@ -144,6 +98,25 @@ int UInventoryComponent::GetEmptySlot()
 	return -1;
 }
 
+bool UInventoryComponent::CheckAddCountable(ABaseItem* item)
+{
+	for (int i = 0; i < InvenSize; i++)
+	{
+		if (InventoryItems[i] != nullptr && InventoryItems[i]->GetClass() == item->GetClass())
+		{
+			ABaseItem* findItem = InventoryItems[i];
+			int count = findItem->GetCounts() + item->GetCounts();
+			UE_LOG(LogTemp, Log, TEXT("findItem->Count: %d // item->Count: %d // count: %d"), findItem->GetCounts(), item->GetCounts(), count);
+			item->SetCounts(count);
+			SetItem(i, item);
+
+			UE_LOG(LogTemp, Log, TEXT("Countable Yes Find"));
+			return true;
+		}
+	}
+	return false;
+}
+
 void UInventoryComponent::SetNullItem(int index)
 {
 	InventoryItems[index] = nullptr;
@@ -151,8 +124,8 @@ void UInventoryComponent::SetNullItem(int index)
 
 	if (slots[index])
 	{
-		slots[index]->InvenImage->SetBrushFromTexture(nullptr);
-		slots[index]->InvenText->SetVisibility(ESlateVisibility::Hidden);
+		slots[index]->BrushInvenImage(nullptr);
+		slots[index]->SetInvenTextVisibility(false);
 	}
 
 }
@@ -160,68 +133,54 @@ void UInventoryComponent::SetNullItem(int index)
 void UInventoryComponent::SubItems(TSubclassOf<ABaseItem> itemClass, int counts)
 {
 	ABaseItem* item = GetWorld()->SpawnActor<ABaseItem>(itemClass);
-
-	if (!item)
-	{
-		UE_LOG(LogTemp, Log, TEXT("item Fail"));
-		return;
-	}
-	else
-	{
-		UE_LOG(LogTemp, Log, TEXT("item Success %s"), *item->GetName());
-	}
 	
 	if (item->GetCountable() == ECountableType::E_Countable)
 	{
-		for (int i = 0; i < 42; i++)
+		for (int i = 0; i < InvenSize; i++)
 		{
-			if (InventoryItems[i] != nullptr && InventoryItems[i]->GetClass() == item->GetClass())
+			if (InventoryItems[i] == nullptr) continue;
+
+			if (InventoryItems[i]->GetClass() != item->GetClass()) continue;
+			
+			ABaseItem* findItem = InventoryItems[i];
+				
+			findItem->SetCounts(findItem->GetCounts() - counts);
+				
+			if (!(OwnerHero->GetMenuWidget())) return;
+				
+			TMap<int, UInventorySlotWidget*> slots = OwnerHero->GetMenuWidget()->GetInventoryWidget()->GetMainInventoryWidget()->GetInventorySlotsWidget()->GetInventorySlot();
+			if (!slots[i]) return;
+					
+			if (findItem->GetCounts() > 0)
 			{
-				ABaseItem* findItem = InventoryItems[i];
-				
-				findItem->SetCounts(findItem->GetCounts() - counts);
-				
-				if (OwnerHero->GetMenuWidget())
-				{
-					TMap<int, UInventorySlotWidget*> slots = OwnerHero->GetMenuWidget()->GetInventoryWidget()->GetMainInventoryWidget()->GetInventorySlotsWidget()->GetInventorySlot();
-					if (slots[i])
-					{
-					 	if (findItem->GetCounts() > 0)
-						{
-							slots[i]->SetInvenText(findItem->GetCounts());
-							UE_LOG(LogTemp, Log, TEXT("ItemCount: %d"), findItem->GetCounts());
-							slots[i]->InvenText->SetVisibility(ESlateVisibility::Visible);
-						}
-						else
-						{
-							InventoryItems[i] = nullptr;
-							slots[i]->InvenImage->SetBrushFromTexture(nullptr);
-							slots[i]->InvenText->SetVisibility(ESlateVisibility::Hidden);
-						}
-					}
-				}
-				
+				SetItem(i, findItem);
+				return;
 			}
+			else
+			{
+				SetNullItem(i);
+				return;
+			}
+			
 		}
 	}
 	else
 	{
-		for (int i = 0; i < 42; i++)
+		for (int i = 0; i < InvenSize; i++)
 		{
-			if (InventoryItems[i] != nullptr && InventoryItems[i]->GetClass() == item->GetClass())
+			if (InventoryItems[i] == nullptr) continue;
+
+			if (InventoryItems[i]->GetClass() == item->GetClass())
 			{
 				ABaseItem* findItem = InventoryItems[i];
 				
-				if (OwnerHero->GetMenuWidget())
-				{
-					TMap<int, UInventorySlotWidget*> slots = OwnerHero->GetMenuWidget()->GetInventoryWidget()->GetMainInventoryWidget()->GetInventorySlotsWidget()->GetInventorySlot();
-					if (slots[i])
-					{
-						InventoryItems[i] = nullptr;
-						slots[i]->InvenImage->SetBrushFromTexture(nullptr);
-					}
-				}
+				if (!(OwnerHero->GetMenuWidget())) return;
 				
+				TMap<int, UInventorySlotWidget*> slots = OwnerHero->GetMenuWidget()->GetInventoryWidget()->GetMainInventoryWidget()->GetInventorySlotsWidget()->GetInventorySlot();
+				if (!slots[i]) return;
+				
+				SetNullItem(i);
+				return;
 			}
 		}
 
@@ -234,7 +193,7 @@ int UInventoryComponent::GetNumsOfItem(TSubclassOf<ABaseItem> item)
 {
 	int count = 0;
 
-	for (int i = 0; i < 42; i++)
+	for (int i = 0; i < InvenSize; i++)
 	{
 		if (InventoryItems[i])
 		{

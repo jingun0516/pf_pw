@@ -45,19 +45,20 @@ void UStateComponent::SetState(E_StateType state)
 
 void UStateComponent::OnHitFunc()
 {
-	if (OwnerCharacter)
-		if(OwnerCharacter->GetHitMontage())
-			OwnerCharacter->PlayAnimMontage(OwnerCharacter->GetHitMontage());
+	if (!OwnerCharacter) return;
+
+	if(OwnerCharacter->GetHitMontage())
+		OwnerCharacter->PlayAnimMontage(OwnerCharacter->GetHitMontage());
 }
 
 void UStateComponent::OnDeadFunc()
 {
-	if (OwnerCharacter)
+	if (!OwnerCharacter) return;
+	
+	if (OwnerCharacter->GetDeadMontage())
 	{
-		if (OwnerCharacter->GetDeadMontage())
-		{
-			OwnerCharacter->PlayAnimMontage(OwnerCharacter->GetDeadMontage());
-		}
+		OwnerCharacter->PlayAnimMontage(OwnerCharacter->GetDeadMontage());
 	}
+	
 }
 

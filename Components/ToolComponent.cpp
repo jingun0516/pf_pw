@@ -178,7 +178,7 @@ bool UToolComponent::CheckEmptySlot(EToolSlot slot)
 	return false;
 }
 
-void UToolComponent::ToolInteraction(ABaseTool* tool)
+void UToolComponent::ToolInteraction(ABaseTool* tool)		// 무기 습득
 {
 	if(OwnerHero)
 		UE_LOG(ToolComp, Log, TEXT("Tool Comp Interaction"));
@@ -193,29 +193,28 @@ void UToolComponent::DoMainAction()
 	
 	if (OwnerCharacter->GetStateComponent()->GetState() == E_StateType::E_Build)
 	{
-		if (OwnerCharacter->GetBuildingComponent()->CanSpawnBuilding())		// Building이 가능한 상태일 경우
-		{
-			OwnerCharacter->GetBuildingComponent()->SpawnBuildingStart();
-		}
+		if (!(OwnerCharacter->GetBuildingComponent()->CanSpawnBuilding())) return;	// Building이 가능한 상태일 경우
+		
+		OwnerCharacter->GetBuildingComponent()->SpawnBuildingStart();
+		return;
+		
 	}
-	else
+
+	if (GetCurTool()->MainAction)
 	{
-		if (GetCurTool()->MainAction)
-		{
-			CurrentAction = GetCurTool()->MainAction;
-			GetCurTool()->MainAction->DoAction();
-		}
+		CurrentAction = GetCurTool()->MainAction;
+		GetCurTool()->MainAction->DoAction();
+		return;
 	}
-	
 }
 
 void UToolComponent::EndMainAction()
 {
 	if (!GetCurTool()) return;
-	if (GetCurTool()->MainAction)
-	{
-		GetCurTool()->MainAction->EndAction();
-	}
+	if (!(GetCurTool()->MainAction)) return;
+	
+	GetCurTool()->MainAction->EndAction();
+	
 }
 
 void UToolComponent::DoSubAction()
@@ -225,6 +224,7 @@ void UToolComponent::DoSubAction()
 	if (OwnerCharacter->GetStateComponent()->GetState() == E_StateType::E_Build)
 	{
 		OwnerCharacter->GetBuildingComponent()->BuildingCancel();
+		return;
 	}
 
 	if (GetCurTool()->SubAction)
@@ -237,6 +237,7 @@ void UToolComponent::DoSubAction()
 void UToolComponent::EndSubAction()
 {
 	if (!GetCurTool()) return;
+
 	if (GetCurTool()->SubAction)
 	{
 		GetCurTool()->SubAction->EndAction();
@@ -268,6 +269,7 @@ void UToolComponent::DoThrowAction()
 void UToolComponent::DoSpawnAction()
 {
 	if (!GetCurTool()) return;
+
 	if (GetCurTool()->SpawnAction)
 	{
 		GetCurTool()->SpawnAction->DoAction();
@@ -277,56 +279,49 @@ void UToolComponent::DoSpawnAction()
 
 void UToolComponent::DoFirstSelect()
 {
-	if (OwnerHero->GetStateComponent()->GetState() == E_StateType::E_Idle)
+	if (!(OwnerHero->GetStateComponent()->GetState() == E_StateType::E_Idle)) return;
+	
+	if (GetTool(EToolSlot::E_First))
 	{
-		if (GetTool(EToolSlot::E_First))
-		{
-			UE_LOG(ToolComp, Log, TEXT("First"));
-			if (CurrentSlot != EToolSlot::E_First)
-				EquipTool(EToolSlot::E_First);
-		}
+		UE_LOG(ToolComp, Log, TEXT("First"));
+		if (CurrentSlot != EToolSlot::E_First)
+			EquipTool(EToolSlot::E_First);
 	}
-	else return;
+	
 }
 
 void UToolComponent::DoSecondSelect()
 {
-	if (OwnerHero->GetStateComponent()->GetState() == E_StateType::E_Idle)
+	if (!(OwnerHero->GetStateComponent()->GetState() == E_StateType::E_Idle)) return;
+	
+	if (GetTool(EToolSlot::E_Second))
 	{
-		if (GetTool(EToolSlot::E_Second))
-		{
-			UE_LOG(ToolComp, Log, TEXT("Second"));
-			if (CurrentSlot != EToolSlot::E_Second)
-				EquipTool(EToolSlot::E_Second);
-		}
+		UE_LOG(ToolComp, Log, TEXT("Second"));
+		if (CurrentSlot != EToolSlot::E_Second)
+			EquipTool(EToolSlot::E_Second);
 	}
-	else return;
 }
 
 void UToolComponent::DoThirdSelect()
 {
-	if (OwnerHero->GetStateComponent()->GetState() == E_StateType::E_Idle)
+	if (!(OwnerHero->GetStateComponent()->GetState() == E_StateType::E_Idle)) return;
+	
+	if (GetTool(EToolSlot::E_Third))
 	{
-		if (GetTool(EToolSlot::E_Third))
-		{
-			UE_LOG(ToolComp, Log, TEXT("Third"));
-			if (CurrentSlot != EToolSlot::E_Third)
-				EquipTool(EToolSlot::E_Third);
-		}
+		UE_LOG(ToolComp, Log, TEXT("Third"));
+		if (CurrentSlot != EToolSlot::E_Third)
+			EquipTool(EToolSlot::E_Third);
 	}
-	else return;
 }
 
 void UToolComponent::DoForthSelect()
 {
-	if (OwnerHero->GetStateComponent()->GetState() == E_StateType::E_Idle)
+	if (!(OwnerHero->GetStateComponent()->GetState() == E_StateType::E_Idle)) return;
+	
+	if (GetTool(EToolSlot::E_Forth))
 	{
-		if (GetTool(EToolSlot::E_Forth))
-		{
-			if (CurrentSlot != EToolSlot::E_Forth)
-				EquipTool(EToolSlot::E_Forth);
-		}
+		if (CurrentSlot != EToolSlot::E_Forth)
+			EquipTool(EToolSlot::E_Forth);
 	}
-	else return;
 }
 

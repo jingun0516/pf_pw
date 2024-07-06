@@ -24,21 +24,21 @@ void UBuildingClickedWidget::NativeOnInitialized()
 void UBuildingClickedWidget::NoButtonClicked()
 {
 	SetVisibility(ESlateVisibility::Hidden);
-	if (GetParentWidget())
-	{
-		APlayerController* PlayerController = GetWorld()->GetFirstPlayerController();
-		if (PlayerController)
-		{
-			TSharedPtr<SWidget> WidgetPtr = GetParentWidget()->TakeWidget(); // UUserWidget을 SWidget으로 변환합니다.
+	if (!GetParentWidget()) return;
+	
+	APlayerController* PlayerController = GetWorld()->GetFirstPlayerController();
+	if (!PlayerController) return;
+	
+	TSharedPtr<SWidget> WidgetPtr = GetParentWidget()->TakeWidget(); // UUserWidget을 SWidget으로 변환합니다.
 
-			FInputModeUIOnly InputMode;
+	FInputModeUIOnly InputMode;
 
-			InputMode.SetWidgetToFocus(WidgetPtr); // 원하는 위젯 지정
-			PlayerController->SetInputMode(InputMode);
-			PlayerController->bShowMouseCursor = true; // 마우스 커서를 보이게 설정할 수도 있습니다.
-			UE_LOG(LogTemp, Log, TEXT("asdfasdf"));
-		}
-	}
+	InputMode.SetWidgetToFocus(WidgetPtr); // 원하는 위젯 지정
+	PlayerController->SetInputMode(InputMode);
+	PlayerController->bShowMouseCursor = true; // 마우스 커서를 보이게 설정
+	UE_LOG(LogTemp, Log, TEXT("asdfasdf"));
+	
+	
 }
 
 void UBuildingClickedWidget::YesButtonClicked()

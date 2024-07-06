@@ -85,6 +85,7 @@ void ABaseMonsterball::OnOverlap(UPrimitiveComponent* OverlappedComponent, AActo
 			if (!aiMonster) return;
 
 			aiMonster->ActivateAIController(false);
+			
 			ABaseAIController* controller = Cast<ABaseAIController>(aiMonster->GetController());
 			if (!controller) return;
 			controller->get_blackboard()->SetValueAsObject(L"TargetActor", nullptr);

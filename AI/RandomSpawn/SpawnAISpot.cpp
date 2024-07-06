@@ -2,6 +2,7 @@
 #include "AI/BaseAI.h"
 #include "Helper.h"
 #include "InfosDataAsset.h"
+#include "Characters/Monsters/BaseMonster.h"
 #include "Characters/Monsters/MonsterStatusDataAsset.h"
 #include "Characters/BaseCharacter.h"
 #include "math.h"

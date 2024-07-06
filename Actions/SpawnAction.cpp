@@ -7,6 +7,8 @@
 #include "Components/State/StateEnum.h"
 #include "Tools/MonsterBall/BaseMonsterball.h"
 #include "Components/ToolComponent.h"
+#include "AI/BaseAI.h"
+#include "Characters/Monsters/BaseMonster.h"
 
 USpawnAction::USpawnAction()
 {
@@ -20,23 +22,23 @@ void USpawnAction::DoAction()
 
 	if (!OwnerCharacter->GetPocketmonComponent()->GetCurPocketmon()) return;
 	
-	if (OwnerCharacter->GetStateComponent()->GetState() == E_StateType::E_Idle)
-	{
-		PlayAnimMontageToIndex(0);
-		if (monsterball_class)
-		{
-			FActorSpawnParameters SpawnParameter;
-			SpawnParameter.Owner = OwnerCharacter;
+	if (OwnerCharacter->GetStateComponent()->GetState() != E_StateType::E_Idle) return;
+	
+	PlayAnimMontageToIndex(0);
+	if (!monsterball_class) return;
+	
+	FActorSpawnParameters SpawnParameter;
+	SpawnParameter.Owner = OwnerCharacter;
 
-			monsterball = GetWorld()->SpawnActor<ABaseMonsterball>(monsterball_class, FVector(), FRotator(), SpawnParameter);
-			if (monsterball)
-			{
-				monsterball->AttachToComponent(OwnerCharacter->GetMesh(), FAttachmentTransformRules::KeepRelativeTransform, L"MonsterBallSocket");
-				monsterball->SetLifeSpan(3.0f);
-			}
-		}
-		OwnerCharacter->GetStateComponent()->SetState(E_StateType::E_Attacking);
-	}
+	monsterball = GetWorld()->SpawnActor<ABaseMonsterball>(monsterball_class, FVector(), FRotator(), SpawnParameter);
+	if (!monsterball) return;
+	
+	monsterball->AttachToComponent(OwnerCharacter->GetMesh(), FAttachmentTransformRules::KeepRelativeTransform, L"MonsterBallSocket");
+	monsterball->SetLifeSpan(3.0f);
+	
+	
+	OwnerCharacter->GetStateComponent()->SetState(E_StateType::E_Attacking);
+	
 }
 
 void USpawnAction::TickAction()

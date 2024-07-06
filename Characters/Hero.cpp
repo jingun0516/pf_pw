@@ -14,17 +14,22 @@
 #include "Components/InventoryComponent.h"
 #include "Components/BuildingComponent.h"
 #include "Components/StatusComponent.h"
+#include "Components/UserStatusComponent.h"
+
 #include "Building/DA_ToBuildDataAsset.h"
 #include "Input/InputDataAsset.h"
 #include "Blueprint/UserWidget.h"
+
 #include "Widgets/Menu/MenuWidget.h"
 #include "Widgets/Menu/MenuContents/InventoryWidget/InventoryWidget.h"
 #include "Widgets/Menu/MenuContents/InventoryWidget/Status/MainStatusWidget.h"
 #include "Widgets/Menu/MenuContents/InventoryWidget/Status/StatusItemSlotWidget.h"
 #include "Widgets/BaseStatus/BaseStatusWidget.h"
-#include "Components/UserStatusComponent.h"
+
 #include "Widgets/Building/ToBuild/ToBuildWidget.h"
 #include "GameFramework/CharacterMovementComponent.h"
+#include "Characters/Monsters/BaseMonster.h"
+#include "AI/BaseAI.h"
 
 DEFINE_LOG_CATEGORY(HeroLog);
 
@@ -248,6 +253,20 @@ void AHero::NotifyActorEndOverlap(AActor* OtherActor)
 		if (building->BaseInteractionWidget)
 			building->BaseInteractionWidget->SetVisibility(ESlateVisibility::Hidden);
 	}
+}
+
+float AHero::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser)
+{
+	if (ABaseMonster* monster = Cast<ABaseMonster>(DamageCauser->GetOwner()))
+	{
+		if (!(monster->GetIsWild())) return 0.f;		// 야생의 몬스터가 아닐 경우 플레이어 데미지 X
+		
+		if (ABaseAI* aiMonster = Cast<ABaseAI>(monster))
+		{
+			if (!(aiMonster->GetCanAttack())) return 0.f;	// 공격 불가 상태일 시 데미지 X
+		}
+	}
+	return Super::TakeDamage(DamageAmount, DamageEvent, EventInstigator, DamageCauser);
 }
 
 void AHero::CreateCamera()

@@ -16,27 +16,25 @@ void UMonsterMeleeAttack::DoAction()
 	
 	if (!OwnerCharacter)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("Action Has No Owner!"));
+		UE_LOG(LogTemp, Warning, TEXT("MonsterMeleeAttack: Has No Owner!"));
 		return;
 	}
 
-	if (OwnerCharacter)
-	{
-		OriginSpeed = OwnerCharacter->GetCharacterMovement()->MaxWalkSpeed;
+	OriginSpeed = OwnerCharacter->GetCharacterMovement()->MaxWalkSpeed;
 
-		if (OwnerCharacter->GetStateComponent()->GetState() == E_StateType::E_Idle)
+	if (OwnerCharacter->GetStateComponent()->GetState() == E_StateType::E_Idle)
+	{
+		if (Cast<AWereWolf_AI>(OwnerCharacter))
 		{
-			if (Cast<AWereWolf_AI>(OwnerCharacter))
-			{
-				PlayAnimMontageToIndex(0, 1.5f);
-			}
-			else if (Cast<AUndeadBear_AI>(OwnerCharacter))
-			{
-				PlayAnimMontageToIndex(1, 1.5f);
-			}
-			OwnerCharacter->GetStateComponent()->SetState(E_StateType::E_Attacking);
+			PlayAnimMontageToIndex(0, 1.5f);
 		}
+		else if (Cast<AUndeadBear_AI>(OwnerCharacter))
+		{
+			PlayAnimMontageToIndex(1, 1.5f);
+		}
+		OwnerCharacter->GetStateComponent()->SetState(E_StateType::E_Attacking);
 	}
+	
 	
 }
 

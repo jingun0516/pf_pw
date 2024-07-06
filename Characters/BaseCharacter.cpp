@@ -32,6 +32,7 @@
 #include "Engine/CollisionProfile.h"
 
 #include "AI/BaseAI.h"
+#include "Characters/Monsters/BaseMonster.h"
 #include "Characters/Hero.h"
 
 DEFINE_LOG_CATEGORY(CharacterLog);
@@ -51,27 +52,6 @@ ABaseCharacter::ABaseCharacter()
 	//SetCharacterMovement();
 }
 
-void ABaseCharacter::CalDamageDirection(FVector ActorLocation, FVector DCLocation, FVector forwardVector)
-{
-	double angle = Helper::GetAngleBetweenActors(ActorLocation, DCLocation, forwardVector);
-
-	if (angle >= 360-45 && angle < 45)
-	{
-		direction = 0; //  DamageDirection::Forward;
-	}
-	else if (angle >= 45 && angle >= 45 + 90)
-	{
-		direction = 1; // DamageDirection::Right;
-	}
-	else if (angle >= 45 + 90 && angle >= 45 + 90 + 90)
-	{
-		direction = 2; // DamageDirection::Back;
-	}
-	else
-	{
-		direction = 3; // DamageDirection::Left;
-	}
-}
 
 void ABaseCharacter::BeginPlay()
 {
@@ -86,26 +66,6 @@ float ABaseCharacter::TakeDamage(float DamageAmount, FDamageEvent const& DamageE
 
 	if (DamageCauser->GetOwner() == this) return 0.f;
 
-	if (Cast<AHero>(this))
-	{
-		if (ABaseMonster* monster = Cast<ABaseMonster>(DamageCauser->GetOwner()))
-		{
-			if (!(monster->GetIsWild())) return 0.f;		// 야생의 몬스터가 아닐 경우 플레이어 데미지 X
-			if (ABaseAI* aiMonster = Cast<ABaseAI>(monster))
-			{
-				if (!(aiMonster->GetCanAttack())) return 0.f;	// 공격 불가 상태일 시 데미지 X
-			}
-		}
-	}
-	if (ABaseMonster* monster = Cast<ABaseMonster>(this))
-	{
-		if (!(monster->GetIsWild()))			
-		{
-			if (Cast<AHero>(DamageCauser->GetOwner()))		// 야생의 몬스터가 아닐 경우 플레이어가 때리지 못함
-				return 0.f;
-		}
-	}
-
 	UE_LOG(CharacterLog, Log, TEXT("%s"), *DamageCauser->GetName());
 	float GotDamage = DamageAmount - GetStatusComponent()->GetArmor();
 	if ((GetStateComponent()->GetState() != E_StateType::E_Dead) && EventInstigator->GetOwner() != this)
@@ -116,13 +76,6 @@ float ABaseCharacter::TakeDamage(float DamageAmount, FDamageEvent const& DamageE
 			float NextHP = HP - GotDamage;
 			UE_LOG(CharacterLog, Log, TEXT("NextHP : %f"), NextHP);
 			GetStatusComponent()->SetHP(NextHP);
-			/*
-			FVector DCLocation = DamageCauser->GetActorLocation();
-			FVector ActorLocation = this->GetActorLocation();
-			FVector forwardVector = this->GetActorForwardVector();
-
-			CalDamageDirection(ActorLocation, DCLocation, forwardVector);
-			*/
 			
 			if (NextHP <= 0)
 			{

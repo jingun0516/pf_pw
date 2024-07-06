@@ -31,5 +31,9 @@ public:
 	void SetItem(int index, ABaseItem* inItem);
 	void SetNullItem(int index);
 	int GetEmptySlot();
+	bool CheckAddCountable(ABaseItem* item);
+	
+private:
+	int InvenSize = 42;
 		
 };

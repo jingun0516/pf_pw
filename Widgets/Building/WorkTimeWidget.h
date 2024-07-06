@@ -14,6 +14,9 @@ class PF_PW_API UWorkTimeWidget : public UBaseBuildingWidget
 {
 	GENERATED_BODY()
 
+public:
+	void SetLeftWorkTime(float leftworktime);
+
 protected:
 	virtual void NativeOnInitialized() override;
 
@@ -22,7 +25,4 @@ protected:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
 	UImage* Image;
-
-public:
-	void SetLeftWorkTime(float leftworktime);
 };

@@ -10,6 +10,7 @@ DECLARE_MULTICAST_DELEGATE(FOnSetHP);
 DECLARE_MULTICAST_DELEGATE(FOnSetMaxHP);
 
 class ABaseCharacter;
+class AHero;
 
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class PF_PW_API UStatusComponent : public UActorComponent
@@ -108,6 +109,7 @@ private:
 	int StatusPoint = 0;
 	UParticleSystem* LevelUpEffect;
 	ABaseCharacter* OwnerCharacter;
+	AHero* OwnerHero;
 
 	class UDataTable* LevelUpDataTable;
 };
