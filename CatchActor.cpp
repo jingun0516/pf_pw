@@ -50,34 +50,33 @@ void ACatchActor::Tick(float DeltaSecond)
 	}
 	if (CurPercent >= 1.f) CurPercent = 1.f;
 
-	if (CatchWidget)
+	if (!CatchWidget) return;
+	
+	UUserWidget* Widget = CatchWidget->GetUserWidgetObject();
+	if (!Widget) return;
+	
+	UTextBlock* TextBlockWidget = Cast<UTextBlock>(Widget->GetWidgetFromName(TEXT("TextBlock")));
+	UImage* ProgressBar = Cast<UImage>(Widget->GetWidgetFromName(TEXT("ProgressBar")));
+
+	if (MI_RoundProgressbar)
 	{
-		UUserWidget* Widget = CatchWidget->GetUserWidgetObject();
-		if (Widget)
-		{
-			UTextBlock* TextBlockWidget = Cast<UTextBlock>(Widget->GetWidgetFromName(TEXT("TextBlock")));
-			UImage* ProgressBar = Cast<UImage>(Widget->GetWidgetFromName(TEXT("ProgressBar")));
-
-			if (MI_RoundProgressbar)
-			{
-				MI_RoundProgressbar->SetScalarParameterValue(L"Percent", CurPercent);
-			}
-			else
-			{
-				MI_RoundProgressbar = UMaterialInstanceDynamic::Create(BaseMaterial, nullptr);
-				if (MI_RoundProgressbar)
-				{
-					ProgressBar->SetBrushFromMaterial(MI_RoundProgressbar);
-					MI_RoundProgressbar->SetScalarParameterValue(L"Percent", CurPercent);
-				}
-			}
-
-			if (TextBlockWidget)
-			{
-				TextBlockWidget->SetText(FText::Format(FText::FromString(TEXT("{0}")), FText::AsNumber(CurPercent * 100)));
-			}
-		}
+		MI_RoundProgressbar->SetScalarParameterValue(L"Percent", CurPercent);
 	}
+	else
+	{
+		MI_RoundProgressbar = UMaterialInstanceDynamic::Create(BaseMaterial, nullptr);
+		if (!MI_RoundProgressbar) return;
+		
+		ProgressBar->SetBrushFromMaterial(MI_RoundProgressbar);
+		MI_RoundProgressbar->SetScalarParameterValue(L"Percent", CurPercent);
+	}
+
+	if (TextBlockWidget)
+	{
+		TextBlockWidget->SetText(FText::Format(FText::FromString(TEXT("{0}")), FText::AsNumber(CurPercent * 100)));
+	}
+	
+	
 }
 
 void ACatchActor::SetCatchInfo(float Start, float End, int num, ABaseMonster* InMonster)
