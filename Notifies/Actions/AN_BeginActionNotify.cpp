@@ -14,14 +14,7 @@ void UAN_BeginActionNotify::Notify(USkeletalMeshComponent* MeshComp, UAnimSequen
 {
 	Super::Notify(MeshComp, Animation, EventReference);
 
-	if (Owner)
-	{
-		if (ToolComponent)
-		{
-			if (ToolComponent->CurrentAction)
-			{
-				ToolComponent->CurrentAction->BeginActionNotify();
-			}
-		}
-	}
+	if (!Owner || !ToolComponent || !ToolComponent->CurrentAction) return;
+	
+	ToolComponent->CurrentAction->BeginActionNotify();
 }

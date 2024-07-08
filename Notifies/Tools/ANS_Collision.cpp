@@ -16,11 +16,10 @@ void UANS_Collision::NotifyBegin(USkeletalMeshComponent* MeshComp, UAnimSequence
 {
 	Super::NotifyBegin(MeshComp, Animation, TotalDuration, EventReference);
 	UE_LOG(ANSCollisionLog, Log, TEXT("Collision Enabled"));
-	if (ToolComponent)
-	{
-		if (ABaseTool* tool = ToolComponent->GetCurTool())
-			tool->SetActorEnableCollision(true);
-	}
+	if (!ToolComponent) return;
+	
+	if (ABaseTool* tool = ToolComponent->GetCurTool())
+		tool->SetActorEnableCollision(true);
 }
 
 
@@ -29,9 +28,8 @@ void UANS_Collision::NotifyEnd(USkeletalMeshComponent* MeshComp, UAnimSequenceBa
 	Super::NotifyEnd(MeshComp, Animation, EventReference);
 
 	UE_LOG(ANSCollisionLog, Log, TEXT("Collision Disabled"));
-	if (ToolComponent)
-	{
-		if (ABaseTool* tool = ToolComponent->GetCurTool())
-			tool->SetActorEnableCollision(false);
-	}
+	if (!ToolComponent) return;
+	
+	if (ABaseTool* tool = ToolComponent->GetCurTool())
+		tool->SetActorEnableCollision(false);
 }

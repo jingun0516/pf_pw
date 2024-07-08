@@ -17,19 +17,17 @@ void ABaseTree::Die()
 {
 	Super::Die();
 
-	if (SpawnItemClass)
-	{
-		AItem_Wood* SpawnItem = GetWorld()->SpawnActor<AItem_Wood>(SpawnItemClass, GetActorLocation(), FRotator());
-		if (SpawnItem)
-		{
-			UE_LOG(LogTemp, Log, TEXT("ItemSpawned"));
-			int32 RandomInt = FMath::RandRange(10, 20);
-			UE_LOG(LogTemp, Log, TEXT("RandomInt: %d"), RandomInt);
-			SpawnItem->SetCounts(RandomInt);
-			SpawnItem->SetActorEnableCollision(true);
-			SpawnItem->SetActorHiddenInGame(false);
-		}
-	}
+	if (!SpawnItemClass) return;
+	
+	AItem_Wood* SpawnItem = GetWorld()->SpawnActor<AItem_Wood>(SpawnItemClass, GetActorLocation(), FRotator());
+	if (!SpawnItem) return;
+	
+	UE_LOG(LogTemp, Log, TEXT("ItemSpawned"));
+	int32 RandomInt = FMath::RandRange(10, 20);
+	UE_LOG(LogTemp, Log, TEXT("RandomInt: %d"), RandomInt);
+	SpawnItem->SetCounts(RandomInt);
+	SpawnItem->SetActorEnableCollision(true);
+	SpawnItem->SetActorHiddenInGame(false);
 }
 
 void ABaseTree::OnBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
